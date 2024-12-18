@@ -32,20 +32,16 @@ def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_
         "CartpathTrace": "gray",
         "WaterPath": "blue",
     }
-
     geometries = []
     attributes = []
     leafy_tree_points = []
     hole_boundary = None
-
     with open(json_file_path, 'r') as file:
         data = json.load(file)
-
     for item in data['gpsItems']:
         shape = item['shape']
         item_type = item['itemType']
         coords = [(point['longitude'], point['latitude']) for point in shape]
-
         if item_type == "HoleBoundary":
             if len(coords) > 2:
                 smoothed_coords = smooth_coordinates(coords, sigma)
@@ -62,25 +58,19 @@ def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_
                 point = Point(coords[0])
                 geometries.append(point)
                 attributes.append({'itemType': item_type, 'color': item_colors.get(item_type, "red")})
-
     gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
-
     fig, ax = plt.subplots(figsize=(15, 15))
-
     if hole_boundary:
         gdf['within_boundary'] = gdf['geometry'].apply(lambda x: hole_boundary.contains(x))
         gdf[gdf['within_boundary']].plot(ax=ax, color=gdf['color'], edgecolor='black')
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
         hole_boundary_gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2)
         plot_leafy_trees(ax, leafy_tree_points, hole_boundary)
-
     ax.set_title("Golf Course Hole Layout (Smoothed)")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.legend(loc="upper left", title="Course Elements")
-
     plt.savefig(output_image_path, dpi=300, bbox_inches='tight')
-    plt.show()
 
 
 if __name__ == '__main__':
