@@ -6,65 +6,53 @@ from scipy.ndimage import gaussian_filter1d
 
 
 def smooth_coordinates(coords, sigma):
-    """
-    使用高斯平滑来平滑坐标点。
-    """
     longitudes, latitudes = zip(*coords)
     smooth_longs = gaussian_filter1d(longitudes, sigma)
     smooth_lats = gaussian_filter1d(latitudes, sigma)
     return list(zip(smooth_longs, smooth_lats))
 
 
-def plot_leafy_trees(ax, points, color='darkolivegreen', marker='^', size=100, label='LeafyTree'):
-    """
-    绘制 LeafyTree 的位置。
-
-    参数:
-    - ax: Matplotlib Axes，绘图的轴。
-    - points: list of tuples，每个元组包含一个点的经度和纬度。
-    - color: str，点的颜色，默认为 'darkolivegreen'。
-    - marker: str，点的形状，默认为 '^'。
-    - size: int，点的大小，默认为 100。
-    - label: str，图例标签，默认为 'LeafyTree'。
-    """
-    x = [point[0] for point in points]
-    y = [point[1] for point in points]
+def plot_leafy_trees(ax, points, boundary, color='darkolivegreen', marker='^', size=100, label='LeafyTree'):
+    x, y = [], []
+    for point in points:
+        point_obj = Point(point)
+        if boundary.contains(point_obj):
+            x.append(point[0])
+            y.append(point[1])
     ax.scatter(x, y, color=color, marker=marker, s=size, label=label)
 
 
-def plot_golf_course(json_file_path, output_image_path='golf_course_layout.jpg', sigma=2):
-    # 定义颜色映射
+def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_layout.jpg', sigma=2):
     item_colors = {
-        "TeeboxTrace": "green",
+        "TeeboxTrace": "yellow",
         "FairwayTrace": "lightgreen",
         "GreenTrace": "darkgreen",
         "BunkerTrace": "sandybrown",
-        "WaterTrace": "blue",
+        "WaterTrace": "lightblue",
         "CartpathTrace": "gray",
-        "WaterPath": "cyan",
-        "HoleBoundary": "none"
+        "WaterPath": "blue",
     }
 
     geometries = []
     attributes = []
     leafy_tree_points = []
+    hole_boundary = None
 
-    # 读取JSON文件
     with open(json_file_path, 'r') as file:
         data = json.load(file)
 
-    # 遍历JSON数据并创建GeoDataFrame
     for item in data['gpsItems']:
         shape = item['shape']
         item_type = item['itemType']
+        coords = [(point['longitude'], point['latitude']) for point in shape]
 
-        # 提取LeafyTree坐标点
-        if item_type == "LeafyTree":
-            for point in shape:
-                leafy_tree_points.append((point['longitude'], point['latitude']))
+        if item_type == "HoleBoundary":
+            if len(coords) > 2:
+                smoothed_coords = smooth_coordinates(coords, sigma)
+                hole_boundary = Polygon(smoothed_coords)
+        elif item_type == "LeafyTree":
+            leafy_tree_points.extend(coords)
         else:
-            coords = [(point['longitude'], point['latitude']) for point in shape]
-
             if len(coords) > 2:
                 smoothed_coords = smooth_coordinates(coords, sigma)
                 polygon = Polygon(smoothed_coords)
@@ -79,12 +67,12 @@ def plot_golf_course(json_file_path, output_image_path='golf_course_layout.jpg',
 
     fig, ax = plt.subplots(figsize=(15, 15))
 
-    gdf[gdf['itemType'] == "HoleBoundary"].plot(ax=ax, color='none', edgecolor='black', linewidth=2)
-    gdf[gdf['itemType'] != "HoleBoundary"].plot(ax=ax, color=gdf[gdf['itemType'] != "HoleBoundary"]['color'],
-                                                edgecolor='black')
-
-    # 调用封装的函数来绘制 LeafyTree
-    plot_leafy_trees(ax, leafy_tree_points)
+    if hole_boundary:
+        gdf['within_boundary'] = gdf['geometry'].apply(lambda x: hole_boundary.contains(x))
+        gdf[gdf['within_boundary']].plot(ax=ax, color=gdf['color'], edgecolor='black')
+        hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
+        hole_boundary_gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2)
+        plot_leafy_trees(ax, leafy_tree_points, hole_boundary)
 
     ax.set_title("Golf Course Hole Layout (Smoothed)")
     ax.set_xlabel("Longitude")
