@@ -4,6 +4,22 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, Point
 from scipy.ndimage import gaussian_filter1d
 
+item_colors = {
+    "TeeboxTrace": "yellow",
+    "FairwayTrace": "lawngreen",
+    "GreenTrace": "forestgreen",
+    "BunkerTrace": "sandybrown",
+    "WaterTrace": "lightblue",
+    "CartpathTrace": "gray",
+    "WaterPath": "blue",
+    "ShrubTree": "darkolivegreen",
+    "LeafyTree": "darkolivegreen",
+    "Default": "forestgreen",
+}
+item_markers = {
+    "LeafyTree": "^",
+}
+
 
 def smooth_coordinates(coords, sigma):
     longitudes, latitudes = zip(*coords)
@@ -12,28 +28,17 @@ def smooth_coordinates(coords, sigma):
     return list(zip(smooth_longs, smooth_lats))
 
 
-def plot_leafy_trees(ax, points, boundary, color='darkolivegreen', marker='^', size=100, label='LeafyTree'):
+def plot_markers(ax, points, boundary, item_type, size=100):
     x, y = [], []
     for point in points:
         point_obj = Point(point)
         if boundary.contains(point_obj):
             x.append(point[0])
             y.append(point[1])
-    ax.scatter(x, y, color=color, marker=marker, s=size, label=label)
+    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=size, label=item_type)
 
 
 def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_data/golf_course_layout.jpg', sigma=2):
-    item_colors = {
-        "TeeboxTrace": "yellow",
-        "FairwayTrace": "lightgreen",
-        "GreenTrace": "darkgreen",
-        "BunkerTrace": "sandybrown",
-        "WaterTrace": "lightblue",
-        "CartpathTrace": "gray",
-        "WaterPath": "blue",
-        "ShrubTree": "darkolivegreen",
-        "Default": "green",
-    }
     geometries = []
     attributes = []
     leafy_tree_points = []
@@ -69,7 +74,7 @@ def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_dat
         hole_boundary_gdf.plot(ax=ax, color=item_colors["Default"], edgecolor='black', linewidth=2)
         gdf['within_boundary'] = gdf['geometry'].apply(lambda x: hole_boundary.contains(x))
         gdf[gdf['within_boundary']].plot(ax=ax, color=gdf['color'], edgecolor='black')
-        plot_leafy_trees(ax, leafy_tree_points, hole_boundary)
+        plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
     ax.set_title("Golf Course Hole Layout (Smoothed)")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
