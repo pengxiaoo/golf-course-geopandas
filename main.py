@@ -22,7 +22,7 @@ def plot_leafy_trees(ax, points, boundary, color='darkolivegreen', marker='^', s
     ax.scatter(x, y, color=color, marker=marker, s=size, label=label)
 
 
-def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_layout.jpg', sigma=2):
+def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_data/golf_course_layout.jpg', sigma=2):
     item_colors = {
         "TeeboxTrace": "yellow",
         "FairwayTrace": "lightgreen",
@@ -31,6 +31,7 @@ def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_
         "WaterTrace": "lightblue",
         "CartpathTrace": "gray",
         "WaterPath": "blue",
+        "ShrubTree": "darkolivegreen",
     }
     geometries = []
     attributes = []
@@ -38,7 +39,9 @@ def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_
     hole_boundary = None
     with open(json_file_path, 'r') as file:
         data = json.load(file)
-    for item in data['gpsItems']:
+    holes = data['holes']
+    hole = holes[hole_index]
+    for item in hole['gpsItems']:
         shape = item['shape']
         item_type = item['itemType']
         coords = [(point['longitude'], point['latitude']) for point in shape]
@@ -74,4 +77,4 @@ def plot_golf_course(json_file_path, output_image_path='output_data/golf_course_
 
 
 if __name__ == '__main__':
-    plot_golf_course(json_file_path='input_data/golf_course_hole_gps_items.json')
+    plot_golf_course(json_file_path='input_data/golf_course_holes.json', hole_index=7)
