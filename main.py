@@ -32,6 +32,7 @@ def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_dat
         "CartpathTrace": "gray",
         "WaterPath": "blue",
         "ShrubTree": "darkolivegreen",
+        "Default": "green",
     }
     geometries = []
     attributes = []
@@ -56,18 +57,18 @@ def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_dat
                 smoothed_coords = smooth_coordinates(coords, sigma)
                 polygon = Polygon(smoothed_coords)
                 geometries.append(polygon)
-                attributes.append({'itemType': item_type, 'color': item_colors.get(item_type, "red")})
+                attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
             else:
                 point = Point(coords[0])
                 geometries.append(point)
-                attributes.append({'itemType': item_type, 'color': item_colors.get(item_type, "red")})
+                attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
     gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
     fig, ax = plt.subplots(figsize=(15, 15))
     if hole_boundary:
+        hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
+        hole_boundary_gdf.plot(ax=ax, color=item_colors["Default"], edgecolor='black', linewidth=2)
         gdf['within_boundary'] = gdf['geometry'].apply(lambda x: hole_boundary.contains(x))
         gdf[gdf['within_boundary']].plot(ax=ax, color=gdf['color'], edgecolor='black')
-        hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-        hole_boundary_gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2)
         plot_leafy_trees(ax, leafy_tree_points, hole_boundary)
     ax.set_title("Golf Course Hole Layout (Smoothed)")
     ax.set_xlabel("Longitude")
