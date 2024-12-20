@@ -28,6 +28,7 @@ item_colors = {
     "Approach": "white",
     "Tee": "white",
 }
+# todo: replace markers with icons
 item_markers = {
     "LeafyTree": "^",
     "Green": "o",
