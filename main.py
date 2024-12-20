@@ -21,8 +21,7 @@ item_markers = {
     "LeafyTree": "^",
 }
 line_widths = {
-    # todo: this doesn't work
-    "WaterPath": 3.0,
+    "WaterPath": 2.0,
     "CartpathTrace": 0.5,
 }
 
@@ -40,7 +39,6 @@ def get_smooth_polygon(coords, sigma=2):
 
 
 def plot_markers(ax, points, boundary, item_type, size=100):
-    # todo: set image as marker
     x, y = [], []
     for point in points:
         point_obj = Point(point)
@@ -96,8 +94,8 @@ def plot_golf_course(json_file_path, hole_number):
             if len(coords) > 1:
                 line = LineString(coords)
                 geometries.append(line)
-                attributes.append(
-                    {'itemType': item_type, 'color': item_colors[item_type], 'lineWidth': line_widths[item_type]})
+                attributes.append({'itemType': item_type, 'color': item_colors[item_type],
+                                   'lineWidth': line_widths[item_type]})
         else:
             if len(coords) > 2:
                 polygon = get_smooth_polygon(coords)
@@ -108,12 +106,21 @@ def plot_golf_course(json_file_path, hole_number):
                 geometries.append(point)
                 attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
     fig, ax = plt.subplots(figsize=(15, 15))
-    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter('%.6f'))  # 保留6位小数
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter('%.6f'))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.6f'))
     gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
     hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
     hole_boundary_gdf.plot(ax=ax, color=item_colors["HoleBoundary"], edgecolor='black', linewidth=2)
-    gdf.plot(ax=ax, color=gdf['color'], edgecolor='black')
+    for _, row in gdf.iterrows():
+        if isinstance(row.geometry, LineString):  # 自定义线宽
+            x, y = row.geometry.xy
+            ax.plot(x, y, color=row['color'], linewidth=row['lineWidth'])
+        elif row['itemType'] == "GreenTrace":  # 延后绘制 GreenTrace
+            continue
+        else:
+            gpd.GeoSeries([row.geometry]).plot(ax=ax, color=row['color'], edgecolor='black')
+    green_trace = gdf[gdf['itemType'] == "GreenTrace"]
+    green_trace.plot(ax=ax, color=green_trace['color'], edgecolor='black')
     plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
     ax.set_title(f"Golf Course Hole Layout (hole {hole_number})")
     ax.set_xlabel("Longitude")
