@@ -5,6 +5,14 @@ import matplotlib.ticker as mticker
 from shapely.geometry import Polygon, Point, LineString
 from scipy.ndimage import gaussian_filter1d
 
+smooth_sigma = 2
+marker_size = 100
+figsize = (15, 15)
+geo_accuracy = 6
+dpi = 200
+default_width = 0.5
+boarder_width = 1.0
+edge_color = "black"
 item_colors = {
     "TeeboxTrace": "yellow",
     "FairwayTrace": "lawngreen",
@@ -22,30 +30,30 @@ item_markers = {
 }
 line_widths = {
     "WaterPath": 2.0,
-    "CartpathTrace": 0.5,
+    "CartpathTrace": default_width,
 }
 
 
-def smooth_coordinates(coords, sigma):
+def smooth_coordinates(coords):
     longitudes, latitudes = zip(*coords)
-    smooth_longs = gaussian_filter1d(longitudes, sigma)
-    smooth_lats = gaussian_filter1d(latitudes, sigma)
+    smooth_longs = gaussian_filter1d(longitudes, smooth_sigma)
+    smooth_lats = gaussian_filter1d(latitudes, smooth_sigma)
     return list(zip(smooth_longs, smooth_lats))
 
 
-def get_smooth_polygon(coords, sigma=2):
-    smoothed_coords = smooth_coordinates(coords, sigma)
+def get_smooth_polygon(coords):
+    smoothed_coords = smooth_coordinates(coords)
     return Polygon(smoothed_coords)
 
 
-def plot_markers(ax, points, boundary, item_type, size=100):
+def plot_markers(ax, points, boundary, item_type):
     x, y = [], []
     for point in points:
         point_obj = Point(point)
         if boundary.contains(point_obj):
             x.append(point[0])
             y.append(point[1])
-    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=size, label=item_type)
+    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=marker_size, label=item_type)
 
 
 def inside_polygon(coord, polygon):
@@ -105,12 +113,12 @@ def plot_golf_course(json_file_path, hole_number):
                 point = Point(coords[0])
                 geometries.append(point)
                 attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
-    fig, ax = plt.subplots(figsize=(15, 15))
-    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter('%.6f'))
-    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter('%.6f'))
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
+    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
     gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
     hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-    hole_boundary_gdf.plot(ax=ax, color=item_colors["HoleBoundary"], edgecolor='black', linewidth=2)
+    hole_boundary_gdf.plot(ax=ax, color=item_colors["HoleBoundary"], edgecolor=edge_color, linewidth=boarder_width)
     for _, row in gdf.iterrows():
         if isinstance(row.geometry, LineString):  # 自定义线宽
             x, y = row.geometry.xy
@@ -118,15 +126,15 @@ def plot_golf_course(json_file_path, hole_number):
         elif row['itemType'] == "GreenTrace":  # 延后绘制 GreenTrace
             continue
         else:
-            gpd.GeoSeries([row.geometry]).plot(ax=ax, color=row['color'], edgecolor='black')
+            gpd.GeoSeries([row.geometry]).plot(ax=ax, color=row['color'], edgecolor=edge_color, linewidth=default_width)
     green_trace = gdf[gdf['itemType'] == "GreenTrace"]
-    green_trace.plot(ax=ax, color=green_trace['color'], edgecolor='black')
+    green_trace.plot(ax=ax, color=green_trace['color'], edgecolor=edge_color, linewidth=default_width)
     plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
     ax.set_title(f"Golf Course Hole Layout (hole {hole_number})")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
-    output_image_path = f"output_data/hole_{hole_number}_layout.png"
-    plt.savefig(output_image_path, dpi=300, bbox_inches='tight')
+    output_image_path = f"output_data/hole_{hole_number}_layout.jpg"
+    plt.savefig(output_image_path, dpi=dpi, format='jpeg', bbox_inches='tight')
 
 
 if __name__ == '__main__':
