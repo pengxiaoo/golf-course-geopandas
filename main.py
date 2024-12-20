@@ -6,7 +6,6 @@ from shapely.geometry import Polygon, Point, LineString
 from scipy.ndimage import gaussian_filter1d
 
 smooth_sigma = 2
-marker_size = 100
 figsize = (15, 15)
 geo_accuracy = 6
 dpi = 200
@@ -16,17 +15,30 @@ edge_color = "black"
 item_colors = {
     "TeeboxTrace": "yellow",
     "FairwayTrace": "lawngreen",
-    "GreenTrace": "forestgreen",
+    "GreenTrace": "lawngreen",
     "BunkerTrace": "sandybrown",
     "WaterTrace": "lightblue",
     "WaterPath": "lightblue",  # line
     "CartpathTrace": "lightgrey",  # line
     "ShrubTree": "darkolivegreen",
-    "LeafyTree": "darkolivegreen",  # points
     "HoleBoundary": "forestgreen",  # boundary
+    # the following are markers
+    "LeafyTree": "darkolivegreen",
+    "Green": "white",
+    "Approach": "white",
+    "Tee": "white",
 }
 item_markers = {
     "LeafyTree": "^",
+    "Green": "o",
+    "Approach": "o",
+    "Tee": "o",
+}
+marker_sizes = {
+    "LeafyTree": 100,
+    "Green": 20,
+    "Approach": 20,
+    "Tee": 20,
 }
 line_widths = {
     "WaterPath": 2.0,
@@ -53,7 +65,8 @@ def plot_markers(ax, points, boundary, item_type):
         if boundary.contains(point_obj):
             x.append(point[0])
             y.append(point[1])
-    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=marker_size, label=item_type)
+    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=marker_sizes[item_type],
+               label=item_type)
 
 
 def inside_polygon(coord, polygon):
@@ -74,6 +87,10 @@ def plot_golf_course(json_file_path, hole_number):
         data = json.load(file)
     holes = data['holes']
     hole = holes[hole_number - 1]
+    (green, approach, tee) = (hole['greenGPSCoordinate'], hole['approachGPSCoordinate'], hole['teeGPSCoordinate'])
+    green_coord = (green['longitude'], green['latitude'])
+    approach_coord = (approach['longitude'], approach['latitude'])
+    tee_coord = (tee['longitude'], tee['latitude'])
     for item in hole['gpsItems']:
         item_type = item['itemType']
         if item_type == "HoleBoundary":
@@ -130,6 +147,9 @@ def plot_golf_course(json_file_path, hole_number):
     green_trace = gdf[gdf['itemType'] == "GreenTrace"]
     green_trace.plot(ax=ax, color=green_trace['color'], edgecolor=edge_color, linewidth=default_width)
     plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
+    plot_markers(ax, [green_coord], hole_boundary, "Green")
+    plot_markers(ax, [approach_coord], hole_boundary, "Approach")
+    plot_markers(ax, [tee_coord], hole_boundary, "Tee")
     ax.set_title(f"Golf Course Hole Layout (hole {hole_number})")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
