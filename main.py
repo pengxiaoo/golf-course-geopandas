@@ -38,7 +38,7 @@ def plot_markers(ax, points, boundary, item_type, size=100):
     ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=size, label=item_type)
 
 
-def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_data/golf_course_layout.jpg', sigma=2):
+def plot_golf_course(json_file_path, hole_number, sigma=2):
     geometries = []
     attributes = []
     leafy_tree_points = []
@@ -46,7 +46,7 @@ def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_dat
     with open(json_file_path, 'r') as file:
         data = json.load(file)
     holes = data['holes']
-    hole = holes[hole_index]
+    hole = holes[hole_number - 1]
     for item in hole['gpsItems']:
         shape = item['shape']
         item_type = item['itemType']
@@ -75,12 +75,14 @@ def plot_golf_course(json_file_path, hole_index=0, output_image_path='output_dat
         gdf['within_boundary'] = gdf['geometry'].apply(lambda x: hole_boundary.contains(x))
         gdf[gdf['within_boundary']].plot(ax=ax, color=gdf['color'], edgecolor='black')
         plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
-    ax.set_title("Golf Course Hole Layout (Smoothed)")
+    ax.set_title(f"Golf Course Hole Layout (hole {hole_number})")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.legend(loc="upper left", title="Course Elements")
+    output_image_path = f"output_data/hole_{hole_number}_layout.png"
     plt.savefig(output_image_path, dpi=300, bbox_inches='tight')
 
 
 if __name__ == '__main__':
-    plot_golf_course(json_file_path='input_data/golf_course_holes.json', hole_index=7)
+    for hole_number in range(1, 2):
+        plot_golf_course(json_file_path='input_data/golf_course_holes_eagle_vines.json', hole_number=hole_number)
