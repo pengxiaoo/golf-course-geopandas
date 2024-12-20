@@ -13,16 +13,19 @@ default_width = 0.5
 boarder_width = 1.0
 edge_color = "black"
 item_colors = {
+    # the following are polygons
     "TeeboxTrace": "yellow",
     "FairwayTrace": "lawngreen",
     "GreenTrace": "lawngreen",
     "BunkerTrace": "sandybrown",
-    "WaterTrace": "lightblue",
-    "WaterPath": "lightblue",  # line
-    "CartpathTrace": "lightgrey",  # line
+    "VegetationTrace": "seagreen",
     "ShrubTree": "darkolivegreen",
-    "HoleBoundary": "forestgreen",  # boundary
-    # the following are markers
+    "WaterTrace": "lightblue",
+    "HoleBoundary": "forestgreen",  # boundary, i.e. the biggest polygon
+    # the following are lines
+    "WaterPath": "lightblue",
+    "CartpathTrace": "lightgrey",
+    # the following are markers, i.e. points
     "LeafyTree": "darkolivegreen",
     "Green": "white",
     "Approach": "white",
@@ -109,12 +112,6 @@ def plot_golf_course(json_file_path, hole_number):
             continue
         if item_type == "LeafyTree":
             leafy_tree_points.extend(coords)
-        elif item_type == "WaterTrace":
-            water_polygon = get_smooth_polygon(coords)
-            water_in_course = intersection_of_polygons(water_polygon, hole_boundary)
-            if not water_in_course.is_empty:
-                geometries.append(water_in_course)
-                attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
         elif item_type == "CartpathTrace" or item_type == "WaterPath":
             coords = [coord for coord in coords if inside_polygon(coord, hole_boundary)]
             if len(coords) > 1:
@@ -124,13 +121,11 @@ def plot_golf_course(json_file_path, hole_number):
                                    'lineWidth': line_widths[item_type]})
         else:
             if len(coords) > 2:
-                polygon = get_smooth_polygon(coords)
-                geometries.append(polygon)
-                attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
-            else:
-                point = Point(coords[0])
-                geometries.append(point)
-                attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
+                item_polygon = get_smooth_polygon(coords)
+                item_in_course = intersection_of_polygons(item_polygon, hole_boundary)
+                if not item_in_course.is_empty:
+                    geometries.append(item_in_course)
+                    attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
     fig, ax = plt.subplots(figsize=figsize)
     ax.xaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
     ax.yaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
