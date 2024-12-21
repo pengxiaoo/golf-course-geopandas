@@ -32,6 +32,12 @@ item_colors = {
     "Approach": "white",
     "Tee": "white",
 }
+item_markers = {
+    "LeafyTree": "^",
+    "Green": "o",
+    "Approach": "o",
+    "Tee": "o",
+}
 item_marker_icon_paths = {
     # todo: ask designer to provide better icons
     "LeafyTree": "icons/leafy_tree.png",
@@ -61,6 +67,17 @@ def smooth_coordinates(coords):
 def get_smooth_polygon(coords):
     smoothed_coords = smooth_coordinates(coords)
     return Polygon(smoothed_coords)
+
+
+def plot_markers(ax, points, boundary, item_type):
+    x, y = [], []
+    for point in points:
+        point_obj = Point(point)
+        if boundary.contains(point_obj):
+            x.append(point[0])
+            y.append(point[1])
+    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=marker_sizes[item_type],
+               label=item_type)
 
 
 def plot_markers_with_icons(ax, points, hole_boundary, item_type):
@@ -143,7 +160,7 @@ def plot_golf_course(json_file_path, hole_number):
             gpd.GeoSeries([row.geometry]).plot(ax=ax, color=row['color'], edgecolor=edge_color, linewidth=default_width)
     green_trace = gdf[gdf['itemType'] == "GreenTrace"]
     green_trace.plot(ax=ax, color=green_trace['color'], edgecolor=edge_color, linewidth=default_width)
-    plot_markers_with_icons(ax, leafy_tree_points, hole_boundary, "LeafyTree")
+    plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
     plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
     plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
     plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
