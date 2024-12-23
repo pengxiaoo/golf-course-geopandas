@@ -17,17 +17,17 @@ item_colors = {
     # the following are polygons
     "TeeboxTrace": "yellow",
     "FairwayTrace": "lawngreen",
-    "GreenTrace": "lawngreen",
+    "GreenTrace": "greenyellow",
     "BunkerTrace": "sandybrown",
     "VegetationTrace": "seagreen",
-    "ShrubTree": "darkolivegreen",
+    "ShrubTree": "darkgreen",
     "WaterTrace": "lightblue",
     "HoleBoundary": "forestgreen",  # boundary, i.e. the biggest polygon
     # the following are lines
     "WaterPath": "lightblue",
     "CartpathTrace": "lightgrey",
     # the following are markers, i.e. points
-    "LeafyTree": "darkolivegreen",
+    "LeafyTree": "darkgreen",
     "Green": "white",
     "Approach": "white",
     "Tee": "white",
