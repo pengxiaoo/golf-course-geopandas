@@ -9,7 +9,7 @@ from scipy.ndimage import gaussian_filter1d
 smooth_sigma = 2
 figsize = (15, 15)
 geo_accuracy = 6
-dpi = 200
+dpi = 300
 default_width = 0.5
 boarder_width = 1.0
 edge_color = "black"
@@ -76,8 +76,14 @@ def plot_markers(ax, points, boundary, item_type):
         if boundary.contains(point_obj):
             x.append(point[0])
             y.append(point[1])
-    ax.scatter(x, y, color=item_colors[item_type], marker=item_markers[item_type], s=marker_sizes[item_type],
-               label=item_type)
+    ax.scatter(
+        x,
+        y,
+        color=item_colors[item_type],
+        marker=item_markers[item_type],
+        s=marker_sizes[item_type],
+        label=item_type,
+    )
 
 
 def plot_markers_with_icons(ax, points, hole_boundary, item_type):
@@ -105,27 +111,33 @@ def plot_golf_course(json_file_path, hole_number):
     attributes = []
     leafy_tree_points = []
     hole_boundary = None
-    with open(json_file_path, 'r') as file:
+    with open(json_file_path, "r") as file:
         data = json.load(file)
-    holes = data['holes']
+    holes = data["holes"]
     hole = holes[hole_number - 1]
-    (green, approach, tee) = (hole['greenGPSCoordinate'], hole['approachGPSCoordinate'], hole['teeGPSCoordinate'])
-    green_coord = (green['longitude'], green['latitude'])
-    approach_coord = (approach['longitude'], approach['latitude'])
-    tee_coord = (tee['longitude'], tee['latitude'])
-    for item in hole['gpsItems']:
-        item_type = item['itemType']
+    (green, approach, tee) = (
+        hole["greenGPSCoordinate"],
+        hole["approachGPSCoordinate"],
+        hole["teeGPSCoordinate"],
+    )
+    green_coord = (green["longitude"], green["latitude"])
+    approach_coord = (approach["longitude"], approach["latitude"])
+    tee_coord = (tee["longitude"], tee["latitude"])
+    for item in hole["gpsItems"]:
+        item_type = item["itemType"]
         if item_type == "HoleBoundary":
-            coords = [(point['longitude'], point['latitude']) for point in item['shape']]
+            coords = [
+                (point["longitude"], point["latitude"]) for point in item["shape"]
+            ]
             hole_boundary = get_smooth_polygon(coords)
             geometries.append(hole_boundary)
-            attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
+            attributes.append({"itemType": item_type, "color": item_colors[item_type]})
             break
-    for item in hole['gpsItems']:
-        item_type = item['itemType']
+    for item in hole["gpsItems"]:
+        item_type = item["itemType"]
         if item_type == "HoleBoundary":
             continue
-        coords = [(point['longitude'], point['latitude']) for point in item['shape']]
+        coords = [(point["longitude"], point["latitude"]) for point in item["shape"]]
         if len(coords) == 0:
             continue
         if item_type == "LeafyTree":
@@ -135,31 +147,47 @@ def plot_golf_course(json_file_path, hole_number):
             if len(coords) > 1:
                 line = LineString(coords)
                 geometries.append(line)
-                attributes.append({'itemType': item_type, 'color': item_colors[item_type],
-                                   'lineWidth': line_widths[item_type]})
+                attributes.append(
+                    {
+                        "itemType": item_type,
+                        "color": item_colors[item_type],
+                        "lineWidth": line_widths[item_type],
+                    }
+                )
         else:
             if len(coords) > 2:
                 item_polygon = get_smooth_polygon(coords)
                 item_in_course = intersection_of_polygons(item_polygon, hole_boundary)
                 if not item_in_course.is_empty:
                     geometries.append(item_in_course)
-                    attributes.append({'itemType': item_type, 'color': item_colors[item_type]})
+                    attributes.append(
+                        {"itemType": item_type, "color": item_colors[item_type]}
+                    )
     fig, ax = plt.subplots(figsize=figsize)
-    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
-    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter(f'%.{geo_accuracy}f'))
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter(f"%.{geo_accuracy}f"))
+    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter(f"%.{geo_accuracy}f"))
     gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
     hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-    hole_boundary_gdf.plot(ax=ax, color=item_colors["HoleBoundary"], edgecolor=edge_color, linewidth=boarder_width)
+    hole_boundary_gdf.plot(
+        ax=ax,
+        color=item_colors["HoleBoundary"],
+        edgecolor=edge_color,
+        linewidth=boarder_width,
+    )
     for _, row in gdf.iterrows():
         if isinstance(row.geometry, LineString):  # 自定义线宽
             x, y = row.geometry.xy
-            ax.plot(x, y, color=row['color'], linewidth=row['lineWidth'])
-        elif row['itemType'] == "GreenTrace":  # 延后绘制 GreenTrace
+            ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"])
+        elif row["itemType"] == "GreenTrace":  # 延后绘制 GreenTrace
             continue
         else:
-            gpd.GeoSeries([row.geometry]).plot(ax=ax, color=row['color'], edgecolor=edge_color, linewidth=default_width)
-    green_trace = gdf[gdf['itemType'] == "GreenTrace"]
-    green_trace.plot(ax=ax, color=green_trace['color'], edgecolor=edge_color, linewidth=default_width)
+            gpd.GeoSeries([row.geometry]).plot(
+                ax=ax, color=row["color"], edgecolor=edge_color, linewidth=default_width
+            )
+    green_trace = gdf[gdf["itemType"] == "GreenTrace"]
+    green_trace.plot(
+        ax=ax, color=green_trace["color"], edgecolor=edge_color, linewidth=default_width
+    )
     plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
     plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
     plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
@@ -168,9 +196,15 @@ def plot_golf_course(json_file_path, hole_number):
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     output_image_path = f"output_data/hole_{hole_number}_layout.jpg"
-    plt.savefig(output_image_path, dpi=dpi, format='jpeg', bbox_inches='tight')
+    # compress the image
+    plt.savefig(
+        output_image_path, dpi=dpi, format="jpeg", bbox_inches="tight", quality=80
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     for hole_number in range(1, 19):
-        plot_golf_course(json_file_path='input_data/golf_course_holes_eagle_vines.json', hole_number=hole_number)
+        plot_golf_course(
+            json_file_path="input_data/golf_course_holes_eagle_vines.json",
+            hole_number=hole_number,
+        )
