@@ -21,10 +21,10 @@ item_colors = {
     "BunkerTrace": "sandybrown",
     "VegetationTrace": "seagreen",
     "ShrubTree": "darkgreen",
-    "WaterTrace": "lightblue",
+    "WaterTrace": "skyblue",
     "HoleBoundary": "forestgreen",  # boundary, i.e. the biggest polygon
     # the following are lines
-    "WaterPath": "lightblue",
+    "WaterPath": "skyblue",
     "CartpathTrace": "lightgrey",
     # the following are markers, i.e. points
     "LeafyTree": "darkgreen",
@@ -189,16 +189,16 @@ def plot_golf_course(json_file_path, hole_number):
         ax=ax, color=green_trace["color"], edgecolor=edge_color, linewidth=default_width
     )
     plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
-    plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
-    plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
-    plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
+    # plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
+    # plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
+    # plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
     ax.set_title(f"Golf Course Hole Layout (hole {hole_number})")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     output_image_path = f"output_data/hole_{hole_number}_layout.jpg"
     # compress the image
     plt.savefig(
-        output_image_path, dpi=dpi, format="jpeg", bbox_inches="tight", quality=80
+        output_image_path, dpi=dpi, format="jpeg", bbox_inches="tight"
     )
 
 
