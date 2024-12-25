@@ -69,7 +69,7 @@ def get_smooth_polygon(coords):
     return Polygon(smoothed_coords)
 
 
-def plot_markers(ax, points, boundary, item_type):
+def plot_markers(ax, points, boundary, item_type, zorder=10):
     x, y = [], []
     for point in points:
         point_obj = Point(point)
@@ -83,6 +83,7 @@ def plot_markers(ax, points, boundary, item_type):
         marker=item_markers[item_type],
         s=marker_sizes[item_type],
         label=item_type,
+        zorder=zorder,
     )
 
 
@@ -177,7 +178,7 @@ def plot_golf_course(json_file_path, hole_number):
     for _, row in gdf.iterrows():
         if isinstance(row.geometry, LineString):  # 自定义线宽
             x, y = row.geometry.xy
-            ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"])
+            ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"], zorder=5)
         elif row["itemType"] == "GreenTrace":  # 延后绘制 GreenTrace
             continue
         else:
