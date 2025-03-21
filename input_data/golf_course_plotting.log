@@ -1,0 +1,516 @@
+2025-03-21 16:21:55,656 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:55,662 - __main__ - INFO - Figure size (inches): width=1.5333333333333334, height=5.136666666666667
+2025-03-21 16:21:55,662 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:55,662 - __main__ - INFO - Final pixels: width=460.00000000000006, height=1541.0
+2025-03-21 16:21:55,774 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:55,781 - __main__ - INFO - Figure size (inches): width=1.1333333333333333, height=5.903333333333333
+2025-03-21 16:21:55,781 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:55,781 - __main__ - INFO - Final pixels: width=340.0, height=1771.0
+2025-03-21 16:21:55,865 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:55,867 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:55,874 - __main__ - INFO - Figure size (inches): width=2.28, height=5.713333333333333
+2025-03-21 16:21:55,874 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:55,874 - __main__ - INFO - Final pixels: width=683.9999999999999, height=1713.9999999999998
+2025-03-21 16:21:56,042 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:56,052 - __main__ - INFO - Figure size (inches): width=2.8733333333333335, height=1.7733333333333334
+2025-03-21 16:21:56,052 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:56,052 - __main__ - INFO - Final pixels: width=862.0, height=532.0
+2025-03-21 16:21:56,811 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:56,820 - __main__ - INFO - Figure size (inches): width=3.7, height=5.376666666666667
+2025-03-21 16:21:56,820 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:56,820 - __main__ - INFO - Final pixels: width=1110.0, height=1613.0
+2025-03-21 16:21:57,035 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:57,042 - __main__ - INFO - Figure size (inches): width=2.3466666666666667, height=1.8533333333333333
+2025-03-21 16:21:57,043 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,043 - __main__ - INFO - Final pixels: width=704.0, height=556.0
+2025-03-21 16:21:57,103 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:57,110 - __main__ - INFO - Figure size (inches): width=5.453333333333333, height=3.8666666666666667
+2025-03-21 16:21:57,110 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,110 - __main__ - INFO - Final pixels: width=1636.0, height=1160.0
+2025-03-21 16:21:57,328 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:57,337 - __main__ - INFO - Figure size (inches): width=5.1866666666666665, height=3.2533333333333334
+2025-03-21 16:21:57,337 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,337 - __main__ - INFO - Final pixels: width=1556.0, height=976.0
+2025-03-21 16:21:57,477 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:57,478 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:57,488 - __main__ - INFO - Figure size (inches): width=4.3533333333333335, height=5.693333333333333
+2025-03-21 16:21:57,488 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,488 - __main__ - INFO - Final pixels: width=1306.0, height=1708.0
+2025-03-21 16:21:57,669 - __main__ - WARNING - stripe_scale_factor: 3
+2025-03-21 16:21:57,677 - __main__ - INFO - Figure size (inches): width=7.596666666666667, height=5.18
+2025-03-21 16:21:57,677 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,678 - __main__ - INFO - Final pixels: width=2279.0, height=1554.0
+2025-03-21 16:21:57,941 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:57,948 - __main__ - INFO - Figure size (inches): width=6.916666666666667, height=2.316666666666667
+2025-03-21 16:21:57,948 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:57,948 - __main__ - INFO - Final pixels: width=2075.0, height=695.0000000000001
+2025-03-21 16:21:58,072 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,080 - __main__ - INFO - Figure size (inches): width=6.016666666666667, height=2.2866666666666666
+2025-03-21 16:21:58,080 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,080 - __main__ - INFO - Final pixels: width=1805.0, height=686.0
+2025-03-21 16:21:58,187 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,194 - __main__ - INFO - Figure size (inches): width=2.5433333333333334, height=2.0433333333333334
+2025-03-21 16:21:58,194 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,194 - __main__ - INFO - Final pixels: width=763.0, height=613.0
+2025-03-21 16:21:58,258 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:58,259 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:58,267 - __main__ - INFO - Figure size (inches): width=5.593333333333334, height=4.31
+2025-03-21 16:21:58,267 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,267 - __main__ - INFO - Final pixels: width=1678.0, height=1292.9999999999998
+2025-03-21 16:21:58,414 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b1c08a80-86ac-11e4-8c28-020000005b00, courseId: 7e81e060-86de-11e4-8f92-020000005b00, holeNumber: 15
+2025-03-21 16:21:58,436 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,444 - __main__ - INFO - Figure size (inches): width=4.47, height=3.2
+2025-03-21 16:21:58,444 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,444 - __main__ - INFO - Final pixels: width=1341.0, height=960.0
+2025-03-21 16:21:58,562 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,569 - __main__ - INFO - Figure size (inches): width=4.493333333333333, height=3.88
+2025-03-21 16:21:58,569 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,569 - __main__ - INFO - Final pixels: width=1348.0, height=1164.0
+2025-03-21 16:21:58,740 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:58,750 - __main__ - INFO - Figure size (inches): width=7.503333333333333, height=2.7666666666666666
+2025-03-21 16:21:58,750 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,750 - __main__ - INFO - Final pixels: width=2251.0, height=830.0
+2025-03-21 16:21:58,899 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,904 - __main__ - INFO - Figure size (inches): width=1.5866666666666667, height=0.5533333333333333
+2025-03-21 16:21:58,904 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,904 - __main__ - INFO - Final pixels: width=476.0, height=166.0
+2025-03-21 16:21:58,932 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,938 - __main__ - INFO - Figure size (inches): width=1.6333333333333333, height=0.59
+2025-03-21 16:21:58,938 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,938 - __main__ - INFO - Final pixels: width=490.0, height=177.0
+2025-03-21 16:21:58,967 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:58,973 - __main__ - INFO - Figure size (inches): width=0.5733333333333334, height=1.86
+2025-03-21 16:21:58,973 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:58,973 - __main__ - INFO - Final pixels: width=172.0, height=558.0
+2025-03-21 16:21:59,008 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,014 - __main__ - INFO - Figure size (inches): width=0.6466666666666666, height=1.66
+2025-03-21 16:21:59,014 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,014 - __main__ - INFO - Final pixels: width=193.99999999999997, height=498.0
+2025-03-21 16:21:59,057 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,062 - __main__ - INFO - Figure size (inches): width=2.1466666666666665, height=0.79
+2025-03-21 16:21:59,062 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,062 - __main__ - INFO - Final pixels: width=644.0, height=237.0
+2025-03-21 16:21:59,097 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,103 - __main__ - INFO - Figure size (inches): width=1.7733333333333334, height=0.57
+2025-03-21 16:21:59,103 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,103 - __main__ - INFO - Final pixels: width=532.0, height=170.99999999999997
+2025-03-21 16:21:59,137 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,142 - __main__ - INFO - Figure size (inches): width=1.5733333333333333, height=0.5366666666666666
+2025-03-21 16:21:59,146 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,146 - __main__ - INFO - Final pixels: width=472.0, height=161.0
+2025-03-21 16:21:59,177 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,183 - __main__ - INFO - Figure size (inches): width=2.0, height=0.5866666666666667
+2025-03-21 16:21:59,183 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,183 - __main__ - INFO - Final pixels: width=600.0, height=176.0
+2025-03-21 16:21:59,214 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,222 - __main__ - INFO - Figure size (inches): width=1.34, height=0.5566666666666666
+2025-03-21 16:21:59,223 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,223 - __main__ - INFO - Final pixels: width=402.0, height=167.0
+2025-03-21 16:21:59,237 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 1
+2025-03-21 16:21:59,238 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 2
+2025-03-21 16:21:59,239 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 3
+2025-03-21 16:21:59,239 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 4
+2025-03-21 16:21:59,240 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 5
+2025-03-21 16:21:59,241 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 6
+2025-03-21 16:21:59,242 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 7
+2025-03-21 16:21:59,242 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 8
+2025-03-21 16:21:59,243 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: 8deec590-86ac-11e4-8c28-020000005b00, courseId: da91c3b0-86c6-11e4-8f92-020000005b00, holeNumber: 9
+2025-03-21 16:21:59,250 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 1
+2025-03-21 16:21:59,252 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 2
+2025-03-21 16:21:59,253 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 3
+2025-03-21 16:21:59,254 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 4
+2025-03-21 16:21:59,256 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 5
+2025-03-21 16:21:59,257 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 6
+2025-03-21 16:21:59,259 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 7
+2025-03-21 16:21:59,260 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 8
+2025-03-21 16:21:59,261 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 9
+2025-03-21 16:21:59,263 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 10
+2025-03-21 16:21:59,264 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 11
+2025-03-21 16:21:59,266 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 12
+2025-03-21 16:21:59,267 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 13
+2025-03-21 16:21:59,269 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 14
+2025-03-21 16:21:59,271 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 15
+2025-03-21 16:21:59,272 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 16
+2025-03-21 16:21:59,273 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 17
+2025-03-21 16:21:59,275 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b20ad9f0-86ac-11e4-8c28-020000005b00, courseId: d2c1dea0-86de-11e4-8f92-020000005b00, holeNumber: 18
+2025-03-21 16:21:59,301 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,307 - __main__ - INFO - Figure size (inches): width=0.8933333333333333, height=5.236666666666666
+2025-03-21 16:21:59,307 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,307 - __main__ - INFO - Final pixels: width=268.0, height=1571.0
+2025-03-21 16:21:59,366 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,371 - __main__ - INFO - Figure size (inches): width=6.573333333333333, height=0.91
+2025-03-21 16:21:59,371 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,371 - __main__ - INFO - Final pixels: width=1972.0, height=273.0
+2025-03-21 16:21:59,439 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,445 - __main__ - INFO - Figure size (inches): width=4.7, height=0.91
+2025-03-21 16:21:59,445 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,445 - __main__ - INFO - Final pixels: width=1410.0, height=273.0
+2025-03-21 16:21:59,500 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,505 - __main__ - INFO - Figure size (inches): width=4.093333333333334, height=1.0
+2025-03-21 16:21:59,505 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,505 - __main__ - INFO - Final pixels: width=1228.0, height=300.0
+2025-03-21 16:21:59,557 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,561 - __main__ - INFO - Figure size (inches): width=2.5, height=0.8033333333333333
+2025-03-21 16:21:59,561 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,561 - __main__ - INFO - Final pixels: width=750.0, height=241.0
+2025-03-21 16:21:59,600 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,605 - __main__ - INFO - Figure size (inches): width=0.7066666666666667, height=3.5866666666666664
+2025-03-21 16:21:59,605 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,605 - __main__ - INFO - Final pixels: width=212.0, height=1076.0
+2025-03-21 16:21:59,654 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:59,656 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:21:59,663 - __main__ - INFO - Figure size (inches): width=6.923333333333333, height=3.92
+2025-03-21 16:21:59,663 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,663 - __main__ - INFO - Final pixels: width=2077.0, height=1176.0
+2025-03-21 16:21:59,849 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,854 - __main__ - INFO - Figure size (inches): width=5.6033333333333335, height=0.9733333333333334
+2025-03-21 16:21:59,854 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,854 - __main__ - INFO - Final pixels: width=1681.0, height=292.0
+2025-03-21 16:21:59,913 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,919 - __main__ - INFO - Figure size (inches): width=1.06, height=3.1666666666666665
+2025-03-21 16:21:59,919 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,919 - __main__ - INFO - Final pixels: width=318.0, height=950.0
+2025-03-21 16:21:59,971 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:21:59,977 - __main__ - INFO - Figure size (inches): width=0.88, height=5.233333333333333
+2025-03-21 16:21:59,977 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:21:59,977 - __main__ - INFO - Final pixels: width=264.0, height=1570.0
+2025-03-21 16:22:00,034 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,040 - __main__ - INFO - Figure size (inches): width=6.52, height=0.8933333333333333
+2025-03-21 16:22:00,040 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,040 - __main__ - INFO - Final pixels: width=1955.9999999999998, height=268.0
+2025-03-21 16:22:00,099 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,104 - __main__ - INFO - Figure size (inches): width=4.713333333333333, height=0.8833333333333333
+2025-03-21 16:22:00,105 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,105 - __main__ - INFO - Final pixels: width=1413.9999999999998, height=265.0
+2025-03-21 16:22:00,157 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,161 - __main__ - INFO - Figure size (inches): width=4.166666666666667, height=1.04
+2025-03-21 16:22:00,161 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,161 - __main__ - INFO - Final pixels: width=1250.0, height=312.0
+2025-03-21 16:22:00,214 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,218 - __main__ - INFO - Figure size (inches): width=2.55, height=0.8433333333333334
+2025-03-21 16:22:00,218 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,218 - __main__ - INFO - Final pixels: width=765.0, height=253.0
+2025-03-21 16:22:00,256 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,261 - __main__ - INFO - Figure size (inches): width=0.6733333333333333, height=3.6166666666666667
+2025-03-21 16:22:00,261 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,261 - __main__ - INFO - Final pixels: width=202.0, height=1085.0
+2025-03-21 16:22:00,329 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:22:00,330 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:22:00,337 - __main__ - INFO - Figure size (inches): width=6.923333333333333, height=4.026666666666666
+2025-03-21 16:22:00,337 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,337 - __main__ - INFO - Final pixels: width=2077.0, height=1208.0
+2025-03-21 16:22:00,525 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,530 - __main__ - INFO - Figure size (inches): width=5.623333333333333, height=1.0933333333333333
+2025-03-21 16:22:00,530 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,530 - __main__ - INFO - Final pixels: width=1687.0, height=328.0
+2025-03-21 16:22:00,591 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,598 - __main__ - INFO - Figure size (inches): width=1.1833333333333333, height=3.26
+2025-03-21 16:22:00,598 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,598 - __main__ - INFO - Final pixels: width=355.0, height=977.9999999999999
+2025-03-21 16:22:00,666 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,672 - __main__ - INFO - Figure size (inches): width=2.78, height=6.116666666666666
+2025-03-21 16:22:00,672 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,672 - __main__ - INFO - Final pixels: width=833.9999999999999, height=1834.9999999999998
+2025-03-21 16:22:00,807 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,816 - __main__ - INFO - Figure size (inches): width=1.35, height=6.3
+2025-03-21 16:22:00,816 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,816 - __main__ - INFO - Final pixels: width=405.0, height=1890.0
+2025-03-21 16:22:00,901 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,909 - __main__ - INFO - Figure size (inches): width=0.94, height=3.8033333333333332
+2025-03-21 16:22:00,909 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,909 - __main__ - INFO - Final pixels: width=282.0, height=1141.0
+2025-03-21 16:22:00,957 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:00,964 - __main__ - INFO - Figure size (inches): width=5.423333333333333, height=1.2133333333333334
+2025-03-21 16:22:00,964 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:00,964 - __main__ - INFO - Final pixels: width=1626.9999999999998, height=364.0
+2025-03-21 16:22:01,029 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,040 - __main__ - INFO - Figure size (inches): width=7.956666666666667, height=1.3033333333333332
+2025-03-21 16:22:01,040 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,040 - __main__ - INFO - Final pixels: width=2387.0, height=390.99999999999994
+2025-03-21 16:22:01,132 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,138 - __main__ - INFO - Figure size (inches): width=0.8366666666666667, height=3.8533333333333335
+2025-03-21 16:22:01,138 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,138 - __main__ - INFO - Final pixels: width=251.0, height=1156.0
+2025-03-21 16:22:01,183 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,193 - __main__ - INFO - Figure size (inches): width=1.1, height=7.49
+2025-03-21 16:22:01,193 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,193 - __main__ - INFO - Final pixels: width=330.0, height=2247.0
+2025-03-21 16:22:01,276 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,284 - __main__ - INFO - Figure size (inches): width=6.72, height=1.9533333333333334
+2025-03-21 16:22:01,284 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,284 - __main__ - INFO - Final pixels: width=2016.0, height=586.0
+2025-03-21 16:22:01,385 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,390 - __main__ - INFO - Figure size (inches): width=1.0, height=2.3733333333333335
+2025-03-21 16:22:01,390 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,390 - __main__ - INFO - Final pixels: width=300.0, height=712.0
+2025-03-21 16:22:01,431 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,440 - __main__ - INFO - Figure size (inches): width=4.333333333333333, height=2.473333333333333
+2025-03-21 16:22:01,440 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,440 - __main__ - INFO - Final pixels: width=1300.0, height=742.0
+2025-03-21 16:22:01,533 - __main__ - WARNING - stripe_scale_factor: 2
+2025-03-21 16:22:01,543 - __main__ - INFO - Figure size (inches): width=7.126666666666667, height=2.986666666666667
+2025-03-21 16:22:01,543 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,543 - __main__ - INFO - Final pixels: width=2138.0, height=896.0
+2025-03-21 16:22:01,689 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,695 - __main__ - INFO - Figure size (inches): width=2.4166666666666665, height=4.236666666666666
+2025-03-21 16:22:01,695 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,695 - __main__ - INFO - Final pixels: width=725.0, height=1271.0
+2025-03-21 16:22:01,785 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,792 - __main__ - INFO - Figure size (inches): width=2.4166666666666665, height=0.9866666666666667
+2025-03-21 16:22:01,792 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,792 - __main__ - INFO - Final pixels: width=725.0, height=296.0
+2025-03-21 16:22:01,834 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,839 - __main__ - INFO - Figure size (inches): width=1.5133333333333334, height=6.123333333333333
+2025-03-21 16:22:01,840 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,840 - __main__ - INFO - Final pixels: width=454.0, height=1837.0
+2025-03-21 16:22:01,931 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:01,938 - __main__ - INFO - Figure size (inches): width=1.2966666666666666, height=6.233333333333333
+2025-03-21 16:22:01,939 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:01,939 - __main__ - INFO - Final pixels: width=389.0, height=1870.0
+2025-03-21 16:22:02,019 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,032 - __main__ - INFO - Figure size (inches): width=6.98, height=1.9333333333333333
+2025-03-21 16:22:02,033 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,033 - __main__ - INFO - Final pixels: width=2094.0, height=580.0
+2025-03-21 16:22:02,139 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,147 - __main__ - INFO - Figure size (inches): width=6.51, height=1.73
+2025-03-21 16:22:02,147 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,147 - __main__ - INFO - Final pixels: width=1953.0, height=519.0
+2025-03-21 16:22:02,238 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,246 - __main__ - INFO - Figure size (inches): width=2.5166666666666666, height=5.586666666666667
+2025-03-21 16:22:02,246 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,246 - __main__ - INFO - Final pixels: width=755.0, height=1676.0
+2025-03-21 16:22:02,346 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 1
+2025-03-21 16:22:02,347 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 2
+2025-03-21 16:22:02,348 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 3
+2025-03-21 16:22:02,349 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 4
+2025-03-21 16:22:02,350 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 5
+2025-03-21 16:22:02,351 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 6
+2025-03-21 16:22:02,352 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 7
+2025-03-21 16:22:02,353 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 8
+2025-03-21 16:22:02,354 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 9
+2025-03-21 16:22:02,355 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 10
+2025-03-21 16:22:02,355 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 11
+2025-03-21 16:22:02,356 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 12
+2025-03-21 16:22:02,357 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 13
+2025-03-21 16:22:02,358 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 14
+2025-03-21 16:22:02,359 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 15
+2025-03-21 16:22:02,360 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 16
+2025-03-21 16:22:02,361 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 17
+2025-03-21 16:22:02,362 - __main__ - WARNING - itemType not in gdf.columns, or hole_boundary is None. clubId: b9610e40-86ac-11e4-8c28-020000005b00, courseId: 421b5660-86e8-11e4-8f92-020000005b00, holeNumber: 18
+2025-03-21 16:22:02,381 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,386 - __main__ - INFO - Figure size (inches): width=1.2566666666666666, height=0.6766666666666666
+2025-03-21 16:22:02,386 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,386 - __main__ - INFO - Final pixels: width=377.0, height=203.0
+2025-03-21 16:22:02,414 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,417 - __main__ - INFO - Figure size (inches): width=1.06, height=0.44666666666666666
+2025-03-21 16:22:02,418 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,418 - __main__ - INFO - Final pixels: width=318.0, height=134.0
+2025-03-21 16:22:02,443 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,447 - __main__ - INFO - Figure size (inches): width=1.16, height=0.47
+2025-03-21 16:22:02,448 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,448 - __main__ - INFO - Final pixels: width=348.0, height=141.0
+2025-03-21 16:22:02,477 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,481 - __main__ - INFO - Figure size (inches): width=0.8366666666666667, height=0.6233333333333333
+2025-03-21 16:22:02,481 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,481 - __main__ - INFO - Final pixels: width=251.0, height=187.0
+2025-03-21 16:22:02,509 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,513 - __main__ - INFO - Figure size (inches): width=1.0766666666666667, height=0.36
+2025-03-21 16:22:02,513 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,513 - __main__ - INFO - Final pixels: width=323.0, height=108.0
+2025-03-21 16:22:02,543 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,547 - __main__ - INFO - Figure size (inches): width=1.38, height=0.42333333333333334
+2025-03-21 16:22:02,547 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,547 - __main__ - INFO - Final pixels: width=413.99999999999994, height=127.0
+2025-03-21 16:22:02,577 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,607 - __main__ - INFO - Figure size (inches): width=1.5333333333333334, height=0.4633333333333333
+2025-03-21 16:22:02,607 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,607 - __main__ - INFO - Final pixels: width=460.00000000000006, height=139.0
+2025-03-21 16:22:02,633 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,637 - __main__ - INFO - Figure size (inches): width=0.8833333333333333, height=0.3333333333333333
+2025-03-21 16:22:02,637 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,637 - __main__ - INFO - Final pixels: width=265.0, height=100.0
+2025-03-21 16:22:02,662 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,668 - __main__ - INFO - Figure size (inches): width=0.8533333333333334, height=0.5266666666666666
+2025-03-21 16:22:02,668 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,669 - __main__ - INFO - Final pixels: width=256.0, height=157.99999999999997
+2025-03-21 16:22:02,703 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,707 - __main__ - INFO - Figure size (inches): width=1.0, height=0.30333333333333334
+2025-03-21 16:22:02,707 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,707 - __main__ - INFO - Final pixels: width=300.0, height=91.0
+2025-03-21 16:22:02,737 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,742 - __main__ - INFO - Figure size (inches): width=1.0233333333333334, height=0.4866666666666667
+2025-03-21 16:22:02,742 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,742 - __main__ - INFO - Final pixels: width=307.0, height=146.0
+2025-03-21 16:22:02,769 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,774 - __main__ - INFO - Figure size (inches): width=0.9366666666666666, height=0.3466666666666667
+2025-03-21 16:22:02,774 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,774 - __main__ - INFO - Final pixels: width=281.0, height=104.0
+2025-03-21 16:22:02,801 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,809 - __main__ - INFO - Figure size (inches): width=0.95, height=0.3566666666666667
+2025-03-21 16:22:02,809 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,809 - __main__ - INFO - Final pixels: width=285.0, height=107.0
+2025-03-21 16:22:02,833 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,837 - __main__ - INFO - Figure size (inches): width=0.8333333333333334, height=0.33666666666666667
+2025-03-21 16:22:02,840 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,840 - __main__ - INFO - Final pixels: width=250.0, height=101.0
+2025-03-21 16:22:02,864 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,868 - __main__ - INFO - Figure size (inches): width=0.9633333333333334, height=0.25
+2025-03-21 16:22:02,868 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,868 - __main__ - INFO - Final pixels: width=289.0, height=75.0
+2025-03-21 16:22:02,894 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,898 - __main__ - INFO - Figure size (inches): width=1.1266666666666667, height=0.3233333333333333
+2025-03-21 16:22:02,898 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,899 - __main__ - INFO - Final pixels: width=338.0, height=96.99999999999999
+2025-03-21 16:22:02,926 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,931 - __main__ - INFO - Figure size (inches): width=1.4733333333333334, height=0.5633333333333334
+2025-03-21 16:22:02,931 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,931 - __main__ - INFO - Final pixels: width=442.0, height=169.0
+2025-03-21 16:22:02,960 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:02,965 - __main__ - INFO - Figure size (inches): width=1.0966666666666667, height=0.94
+2025-03-21 16:22:02,965 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:02,965 - __main__ - INFO - Final pixels: width=329.0, height=282.0
+2025-03-21 16:22:03,006 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,012 - __main__ - INFO - Figure size (inches): width=0.6766666666666666, height=2.4033333333333333
+2025-03-21 16:22:03,012 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,012 - __main__ - INFO - Final pixels: width=203.0, height=721.0
+2025-03-21 16:22:03,051 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,057 - __main__ - INFO - Figure size (inches): width=0.67, height=1.8233333333333333
+2025-03-21 16:22:03,057 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,057 - __main__ - INFO - Final pixels: width=201.0, height=547.0
+2025-03-21 16:22:03,096 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,102 - __main__ - INFO - Figure size (inches): width=1.77, height=1.0033333333333334
+2025-03-21 16:22:03,102 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,102 - __main__ - INFO - Final pixels: width=531.0, height=301.0
+2025-03-21 16:22:03,144 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,149 - __main__ - INFO - Figure size (inches): width=3.67, height=2.973333333333333
+2025-03-21 16:22:03,149 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,149 - __main__ - INFO - Final pixels: width=1101.0, height=892.0
+2025-03-21 16:22:03,245 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,252 - __main__ - INFO - Figure size (inches): width=1.4933333333333334, height=1.8966666666666667
+2025-03-21 16:22:03,252 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,252 - __main__ - INFO - Final pixels: width=448.0, height=569.0
+2025-03-21 16:22:03,298 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,299 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,306 - __main__ - INFO - Figure size (inches): width=0.5466666666666666, height=1.9033333333333333
+2025-03-21 16:22:03,306 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,306 - __main__ - INFO - Final pixels: width=164.0, height=571.0
+2025-03-21 16:22:03,339 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,344 - __main__ - INFO - Figure size (inches): width=2.763333333333333, height=0.6133333333333333
+2025-03-21 16:22:03,344 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,344 - __main__ - INFO - Final pixels: width=829.0, height=184.0
+2025-03-21 16:22:03,387 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,392 - __main__ - INFO - Figure size (inches): width=1.5766666666666667, height=1.08
+2025-03-21 16:22:03,393 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,393 - __main__ - INFO - Final pixels: width=473.0, height=324.0
+2025-03-21 16:22:03,437 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,448 - __main__ - INFO - Figure size (inches): width=1.3533333333333333, height=3.183333333333333
+2025-03-21 16:22:03,448 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,448 - __main__ - INFO - Final pixels: width=406.0, height=954.9999999999999
+2025-03-21 16:22:03,508 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,513 - __main__ - INFO - Figure size (inches): width=0.6233333333333333, height=2.0733333333333333
+2025-03-21 16:22:03,513 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,513 - __main__ - INFO - Final pixels: width=187.0, height=622.0
+2025-03-21 16:22:03,549 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,557 - __main__ - INFO - Figure size (inches): width=4.87, height=1.15
+2025-03-21 16:22:03,557 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,557 - __main__ - INFO - Final pixels: width=1461.0, height=345.0
+2025-03-21 16:22:03,620 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,626 - __main__ - INFO - Figure size (inches): width=0.8733333333333333, height=2.776666666666667
+2025-03-21 16:22:03,626 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,626 - __main__ - INFO - Final pixels: width=262.0, height=833.0
+2025-03-21 16:22:03,671 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,675 - __main__ - INFO - Figure size (inches): width=0.5533333333333333, height=1.9966666666666666
+2025-03-21 16:22:03,675 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,675 - __main__ - INFO - Final pixels: width=166.0, height=599.0
+2025-03-21 16:22:03,711 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,718 - __main__ - INFO - Figure size (inches): width=0.8066666666666666, height=2.703333333333333
+2025-03-21 16:22:03,718 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,718 - __main__ - INFO - Final pixels: width=242.0, height=811.0
+2025-03-21 16:22:03,760 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,763 - __main__ - INFO - Figure size (inches): width=0.8, height=2.53
+2025-03-21 16:22:03,763 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,763 - __main__ - INFO - Final pixels: width=240.0, height=758.9999999999999
+2025-03-21 16:22:03,810 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,814 - __main__ - INFO - Figure size (inches): width=4.3966666666666665, height=1.0933333333333333
+2025-03-21 16:22:03,814 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,815 - __main__ - INFO - Final pixels: width=1319.0, height=328.0
+2025-03-21 16:22:03,870 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,875 - __main__ - INFO - Figure size (inches): width=2.63, height=0.7966666666666666
+2025-03-21 16:22:03,875 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,875 - __main__ - INFO - Final pixels: width=789.0, height=239.0
+2025-03-21 16:22:03,911 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,915 - __main__ - INFO - Figure size (inches): width=2.6966666666666668, height=1.0166666666666666
+2025-03-21 16:22:03,915 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,916 - __main__ - INFO - Final pixels: width=809.0, height=305.0
+2025-03-21 16:22:03,961 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:03,965 - __main__ - INFO - Figure size (inches): width=4.033333333333333, height=0.6266666666666667
+2025-03-21 16:22:03,965 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:03,965 - __main__ - INFO - Final pixels: width=1210.0, height=188.0
+2025-03-21 16:22:04,010 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,014 - __main__ - INFO - Figure size (inches): width=0.54, height=1.7133333333333334
+2025-03-21 16:22:04,014 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,014 - __main__ - INFO - Final pixels: width=162.0, height=514.0
+2025-03-21 16:22:04,048 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,052 - __main__ - INFO - Figure size (inches): width=0.42333333333333334, height=1.82
+2025-03-21 16:22:04,053 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,053 - __main__ - INFO - Final pixels: width=127.0, height=546.0
+2025-03-21 16:22:04,085 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,089 - __main__ - INFO - Figure size (inches): width=2.0833333333333335, height=0.54
+2025-03-21 16:22:04,089 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,089 - __main__ - INFO - Final pixels: width=625.0, height=162.0
+2025-03-21 16:22:04,119 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,123 - __main__ - INFO - Figure size (inches): width=2.486666666666667, height=0.5
+2025-03-21 16:22:04,123 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,123 - __main__ - INFO - Final pixels: width=746.0, height=150.0
+2025-03-21 16:22:04,185 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,189 - __main__ - INFO - Figure size (inches): width=0.5433333333333333, height=2.3533333333333335
+2025-03-21 16:22:04,189 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,189 - __main__ - INFO - Final pixels: width=163.0, height=706.0
+2025-03-21 16:22:04,228 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,232 - __main__ - INFO - Figure size (inches): width=2.1033333333333335, height=0.43333333333333335
+2025-03-21 16:22:04,232 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,232 - __main__ - INFO - Final pixels: width=631.0, height=130.0
+2025-03-21 16:22:04,265 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,269 - __main__ - INFO - Figure size (inches): width=1.8066666666666666, height=0.5466666666666666
+2025-03-21 16:22:04,269 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,269 - __main__ - INFO - Final pixels: width=542.0, height=164.0
+2025-03-21 16:22:04,304 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,308 - __main__ - INFO - Figure size (inches): width=3.84, height=0.51
+2025-03-21 16:22:04,312 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,312 - __main__ - INFO - Final pixels: width=1152.0, height=153.0
+2025-03-21 16:22:04,347 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,351 - __main__ - INFO - Figure size (inches): width=1.3866666666666667, height=0.44
+2025-03-21 16:22:04,351 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,351 - __main__ - INFO - Final pixels: width=416.0, height=132.0
+2025-03-21 16:22:04,377 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,381 - __main__ - INFO - Figure size (inches): width=1.29, height=0.43
+2025-03-21 16:22:04,381 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,381 - __main__ - INFO - Final pixels: width=387.0, height=129.0
+2025-03-21 16:22:04,412 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,416 - __main__ - INFO - Figure size (inches): width=1.1966666666666668, height=0.49666666666666665
+2025-03-21 16:22:04,416 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,416 - __main__ - INFO - Final pixels: width=359.00000000000006, height=149.0
+2025-03-21 16:22:04,450 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,454 - __main__ - INFO - Figure size (inches): width=1.2933333333333332, height=0.4766666666666667
+2025-03-21 16:22:04,454 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,454 - __main__ - INFO - Final pixels: width=387.99999999999994, height=143.0
+2025-03-21 16:22:04,484 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,488 - __main__ - INFO - Figure size (inches): width=0.48, height=1.5966666666666667
+2025-03-21 16:22:04,488 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,488 - __main__ - INFO - Final pixels: width=144.0, height=479.0
+2025-03-21 16:22:04,520 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,524 - __main__ - INFO - Figure size (inches): width=0.5433333333333333, height=1.61
+2025-03-21 16:22:04,524 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,524 - __main__ - INFO - Final pixels: width=163.0, height=483.00000000000006
+2025-03-21 16:22:04,558 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,564 - __main__ - INFO - Figure size (inches): width=4.14, height=0.5333333333333333
+2025-03-21 16:22:04,564 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,564 - __main__ - INFO - Final pixels: width=1242.0, height=160.0
+2025-03-21 16:22:04,601 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,605 - __main__ - INFO - Figure size (inches): width=0.4, height=1.45
+2025-03-21 16:22:04,605 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,605 - __main__ - INFO - Final pixels: width=120.0, height=435.0
+2025-03-21 16:22:04,635 - __main__ - WARNING - stripe_scale_factor: 1
+2025-03-21 16:22:04,640 - __main__ - INFO - Figure size (inches): width=4.216666666666667, height=0.61
+2025-03-21 16:22:04,640 - __main__ - INFO - Resolution: 0.20 meters/pixel
+2025-03-21 16:22:04,640 - __main__ - INFO - Final pixels: width=1265.0, height=183.0
