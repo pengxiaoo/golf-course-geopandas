@@ -2,3 +2,4 @@
 output_data/*
 .DS_Store
 .venv
+input_data/golf_course_plotting.log
