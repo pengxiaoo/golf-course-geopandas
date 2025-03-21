@@ -148,10 +148,10 @@ def plot_markers(ax, points, boundary, item_type, zorder=10):
 def plot_markers_with_icons(ax, points, hole_boundary, item_type):
     for point in points:
         if inside_polygon(point, hole_boundary):
+            scaled_size = get_marker_scale_size(ax, item_type)
             icon_path = item_marker_icon_paths[item_type]
             icon = plt.imread(icon_path)
-            zoom_factor = (marker_sizes[item_type] / 100) * 0.05
-            imagebox = OffsetImage(icon, zoom=zoom_factor)
+            imagebox = OffsetImage(icon, zoom=scaled_size)
             ab = AnnotationBbox(imagebox, (point[0], point[1]), frameon=False, pad=0)
             ax.add_artist(ab)
 
@@ -325,7 +325,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             edgecolor=edge_color,
             linewidth=default_width,
         )
-        plot_markers(ax, tree_points, hole_boundary, "Tree")
+        plot_markers_with_icons(ax, tree_points, hole_boundary, "Tree")
         # plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
         # plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
         # plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
