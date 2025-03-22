@@ -149,7 +149,7 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
             polygon = geo_series.iloc[0]
             coords = polygon.exterior.coords
             path = Path(coords)
-            patch = PathPatch(path, facecolor='none')
+            patch = PathPatch(path, facecolor='none', edgecolor='none')
             ax.add_patch(patch)
             # 为每个网格创建纹理
             for i in range(nx):
@@ -157,12 +157,12 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
                     x = bounds[0] + i * base_size
                     y = bounds[1] + j * base_size
                     img = ax.imshow(texture_img,
-                                    extent=[x, x + base_size, y, y + base_size],
-                                    alpha=0.7,
-                                    zorder=item.zorder,
-                                    aspect='auto',
-                                    interpolation='bilinear')
-                    img.set_clip_path(patch)
+                                  extent=[x, x + base_size, y, y + base_size],
+                                  alpha=0.7,
+                                  zorder=item.zorder,
+                                  aspect='auto',
+                                  interpolation='bilinear',
+                                  clip_path=patch)
             # 绘制多边形边界
             geo_series.plot(
                 ax=ax,
