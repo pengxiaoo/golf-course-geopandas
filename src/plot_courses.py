@@ -3,14 +3,13 @@ import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from shapely.geometry import Point, LineString, Polygon
-from scipy.ndimage import gaussian_filter1d
+from shapely.geometry import Point, LineString
 import numpy as np
 from hole_item import ItemType, ItemStyle, Polygon, Line, Marker
 from utils import get_smooth_polygon, logger, root_dir
 
 dpi = 300
-target_meters_per_pixel = 0.2 
+target_meters_per_pixel = 0.2
 lat_to_meter_ratio = 111000
 default_width = 0.0
 boarder_width = 0.1
@@ -41,6 +40,7 @@ pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|", img_icon="pin
 green = Marker(ItemType.Green, "white", symbol_icon="o", img_icon="green", base_size=20)
 approach = Marker(ItemType.Approach, "white", symbol_icon="o", img_icon="approach", base_size=20)
 tee = Marker(ItemType.Tee, "white", symbol_icon="o", img_icon="tee", base_size=20)
+
 
 def get_item_by_type(item_type: ItemType):
     if item_type == ItemType.TeeboxTrace.value:
@@ -80,7 +80,7 @@ def get_item_by_type(item_type: ItemType):
     else:
         logger.warning(f"Unknown item type: {item_type}")
         return None
-    
+
 
 def get_marker_scale_size(ax, marker: Marker):
     fig_width, fig_height = ax.figure.get_size_inches()
@@ -121,11 +121,22 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
             zorder=zorder,
         )
     elif marker.style == ItemStyle.ImageFill:
-        icon = plt.imread(marker.img_icon)
-        imagebox = OffsetImage(icon, zoom=scaled_size)
-        for i in range(len(x)):
-            ab = AnnotationBbox(imagebox, (x[i], y[i]), frameon=False, pad=0)
-            ax.add_artist(ab)
+        try:
+            icon = plt.imread(marker.img_icon)
+            for i in range(len(x)):
+                imagebox = OffsetImage(icon, zoom=scaled_size)
+                ab = AnnotationBbox(
+                    imagebox, 
+                    (x[i], y[i]), 
+                    frameon=False,
+                    pad=0,
+                    box_alignment=(0.5, 0.5),
+                    bboxprops=dict(alpha=1)
+                )
+                ax.add_artist(ab)
+                ab.zorder = zorder
+        except Exception as e:
+            logger.warning(f"Error plotting image: {e}")
     else:
         logger.warning(f"Unknown marker style: {marker.style}")
 
@@ -242,7 +253,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         # check data integrity
         gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
         if "itemType" not in gdf.columns or hole_boundary is None:
-            logger.warning(
+            logger.info(
                 f"itemType not in gdf.columns, or hole_boundary is None. {debug_info}"
             )
             return
@@ -255,7 +266,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         ax.spines["right"].set_visible(False)  # 隐藏右边框
         ax.spines["bottom"].set_visible(False)  # 隐藏下边框
         ax.spines["left"].set_visible(False)  # 隐藏左边框
-        ax.set_aspect("equal") 
+        ax.set_aspect("equal")
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_xlim(bounds[0], bounds[2])
@@ -267,7 +278,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         logger.info(
             f"Final pixels: width={fig_width * adjusted_dpi}, height={fig_height * adjusted_dpi}"
         )
-        
+
         # plot hole boundary
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
         hole_boundary_gdf.plot(
@@ -312,9 +323,9 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             edgecolor=edge_color,
             linewidth=default_width,
         )
-        for marker in markers:
-            plot_markers(ax, marker[0], marker[1], hole_boundary)
-            
+        for marker, coords in markers:
+            plot_markers(ax, marker, coords, hole_boundary)
+
         plt.savefig(
             f"{output_folder_path}/{club_id}_{course_id}_{hole_number}.png",
             dpi=adjusted_dpi,
