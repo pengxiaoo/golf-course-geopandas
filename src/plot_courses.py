@@ -4,7 +4,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString
-from hole_item import ItemType, ItemStyle, Polygon, Line, Marker
+from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
 from utils import logger, root_dir
 import utils
 
@@ -139,6 +139,16 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
         logger.warning(f"Unknown marker style: {marker.style}")
 
 
+def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color, line_width=default_width, alpha=1):
+    geo_series.plot(
+        ax=ax,
+        color=item.color,
+        edgecolor=edge_color,
+        linewidth=line_width,
+        alpha=alpha,
+    )
+
+
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
     hole = holes[hole_number - 1]
@@ -241,13 +251,9 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
 
         # plot hole boundary
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-        hole_boundary_gdf.plot(
-            ax=ax,
-            color=holeBoundary.color,
-            edgecolor=edge_color,
-            linewidth=boarder_width,
-        )
+        plot_polygon(ax, hole_boundary_gdf, holeBoundary, edge_color, boarder_width)
         for _, row in gdf.iterrows():
+            item = get_item_by_type(row["itemType"])
             if isinstance(row.geometry, LineString):
                 # plot lines
                 x, y = row.geometry.xy
@@ -257,34 +263,15 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 continue
             elif row["itemType"] == fairwayTrace.type:
                 # plot fairway trace
-                stripe_scale_factor = get_stripe_scale_factor(ax)
-                hatch_pattern = "\\" + " " * stripe_scale_factor
                 fairway_trace = gpd.GeoSeries([row.geometry])
-                fairway_trace.plot(
-                    ax=ax,
-                    color=fairway_colors[0],
-                    edgecolor=fairway_colors[0],
-                    linewidth=default_width,
-                    hatch=hatch_pattern,
-                    alpha=0.3,
-                )
+                plot_polygon(ax, fairway_trace, item, fairway_colors[0], alpha=0.3)
             else:
                 # plot polygons
                 polygon_trace = gpd.GeoSeries([row.geometry])
-                polygon_trace.plot(
-                    ax=ax,
-                    color=row["color"],
-                    edgecolor=edge_color,
-                    linewidth=default_width,
-                )
+                plot_polygon(ax, polygon_trace, item, row["color"])
         # plot green trace
         green_trace = gdf[gdf["itemType"] == greenTrace.type]
-        green_trace.plot(
-            ax=ax,
-            color=green_trace["color"],
-            edgecolor=edge_color,
-            linewidth=default_width,
-        )
+        plot_polygon(ax, green_trace, greenTrace, green_trace["color"])
         for marker, coords in markers:
             plot_markers(ax, marker, coords, hole_boundary)
 
