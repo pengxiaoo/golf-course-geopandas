@@ -23,7 +23,7 @@ smooth_sigma = 1
 geo_accuracy = 6
 dpi = 300
 max_pixels = 2000
-target_meters_per_pixel = 0.2  # 0.31570597218316104
+target_meters_per_pixel = 0.2 
 lat_to_meter_ratio = 111000
 invalid_coordinates = {
     "longitude": -180,
@@ -46,33 +46,42 @@ item_colors = {
     "WaterPath": "skyblue",
     "CartpathTrace": "lightgrey",
     "CartpathPath": "lightgrey",
-    # the following are markers, i.e. points
-    "Tree": "darkgreen",
-    # "LeafyTree": "darkgreen",
-    # "ShrubTree": "darkgreen",
-    # "PalmTree": "darkgreen",
-    # "PineTree": "darkgreen",
+    # the following are dots or small cluster of dots
+    "LeafyTree": "darkgreen",
+    "ShrubTree": "darkgreen",
+    "PalmTree": "darkgreen",
+    "PineTree": "darkgreen",
     "Green": "white",
     "Approach": "white",
     "Tee": "white",
 }
 item_markers = {
-    "Tree": "^",
+    "LeafyTree": "^",
+    "ShrubTree": "+",
+    "PalmTree": "o",
+    "PineTree": "x",
     "Green": "o",
     "Approach": "o",
     "Tee": "o",
 }
 item_marker_icon_paths = {
-    # todo: ask designer to provide better icons
-    "Tree": "icons/tree.png",
+    # create random icons initially. after success, we will have designer to provide better icons
+    "LeafyTree": "icons/leafy_tree.png",
+    "ShrubTree": "icons/shrub_tree.png",
+    "PalmTree": "icons/palm_tree.png",
+    "PineTree": "icons/pine_tree.png",
     "Green": "icons/green.webp",
     "Approach": "icons/approach.png",
     "Tee": "icons/tee.png",
 }
-marker_sizes = {
-    "Tree": 200,
+item_marker_base_size = {
+    # todo: need to scale according to the figure size
+    "LeafyTree": 200,
+    "ShrubTree": 200,
+    "PalmTree": 200,
+    "PineTree": 200,
     "Green": 100,
-    "Approach": 10,
+    "Approach": 100,
     "Tee": 100,
 }
 line_widths = {
@@ -112,8 +121,8 @@ def get_marker_scale_size(ax, item_type):
     fig_width, fig_height = ax.figure.get_size_inches()
     fig_area = fig_width * fig_height
     scale_factor = fig_area / base_area
-    scaled_size = marker_sizes[item_type] * scale_factor
-    return scaled_size
+    marker_scaled_size = item_marker_base_size[item_type] * scale_factor
+    return marker_scaled_size
 
 
 def get_stripe_scale_factor(ax):
@@ -127,6 +136,8 @@ def get_stripe_scale_factor(ax):
 
 
 def plot_markers(ax, points, boundary, item_type, zorder=10):
+    if points is None or len(points) == 0:
+        return
     x, y = [], []
     for point in points:
         point_obj = Point(point)
@@ -145,7 +156,10 @@ def plot_markers(ax, points, boundary, item_type, zorder=10):
     )
 
 
+# todo: has bugs
 def plot_markers_with_icons(ax, points, hole_boundary, item_type):
+    if points is None or len(points) == 0:
+        return
     for point in points:
         if inside_polygon(point, hole_boundary):
             scaled_size = get_marker_scale_size(ax, item_type)
@@ -175,26 +189,22 @@ def intersection_of_polygons(polygon1, polygon2):
         return None
 
 
-def calculate_pixel_resolution(bounds, target_resolution=None):
+def calculate_pixel_resolution(bounds):
     x_min, y_min, x_max, y_max = bounds
     center_lat = (y_min + y_max) / 2
     center_lat_rad = np.pi * center_lat / 180
     width_meters = (x_max - x_min) * lat_to_meter_ratio * np.cos(center_lat_rad)
     height_meters = (y_max - y_min) * lat_to_meter_ratio
 
-    if target_resolution is None:
-        # 使用较大的分辨率作为统一标准
-        target_resolution = max(width_meters / max_pixels, height_meters / max_pixels)
-
     # 计算需要的像素数
-    pixels_width = int(width_meters / target_resolution)
-    pixels_height = int(height_meters / target_resolution)
+    pixels_width = int(width_meters / target_meters_per_pixel)
+    pixels_height = int(height_meters / target_meters_per_pixel)
 
     # 计算所需的figure尺寸和dpi
     fig_width = pixels_width / dpi
     fig_height = pixels_height / dpi
 
-    return fig_width, fig_height, dpi, target_resolution, center_lat_rad
+    return fig_width, fig_height, dpi, target_meters_per_pixel, center_lat_rad
 
 
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
@@ -202,7 +212,6 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
     hole = holes[hole_number - 1]
     geometries = []
     attributes = []
-    tree_points = []
     hole_boundary = None
     (green, approach, tee) = (
         hole.get("greenGPSCoordinate", invalid_coordinates),
@@ -227,6 +236,10 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 )
             break
     # record the rest of the items, other than hole boundary
+    leafy_tree_points = []
+    shrub_tree_points = []
+    palm_tree_points = []
+    pine_tree_points = []
     for item in hole["gpsItems"]:
         item_type = item["itemType"]
         if item_type == "HoleBoundary":
@@ -234,8 +247,14 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         coords = [(point["longitude"], point["latitude"]) for point in item["shape"]]
         if len(coords) == 0:
             continue
-        if item_type.endswith("Tree"):
-            tree_points.extend(coords)
+        if item_type == "LeafyTree":
+            leafy_tree_points.extend(coords)
+        elif item_type == "ShrubTree":
+            shrub_tree_points.extend(coords)
+        elif item_type == "PalmTree":
+            palm_tree_points.extend(coords)
+        elif item_type == "PineTree":
+            pine_tree_points.extend(coords)
         elif item_type == "CartpathTrace" or item_type == "WaterPath":
             coords = [coord for coord in coords if inside_polygon(coord, hole_boundary)]
             if len(coords) > 1:
@@ -274,9 +293,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         bounds = hole_boundary.bounds
 
         # 计算图像尺寸和分辨率
-        fig_width, fig_height, adjusted_dpi, resolution, center_lat_rad = (
-            calculate_pixel_resolution(bounds, target_meters_per_pixel)
-        )
+        fig_width, fig_height, adjusted_dpi, resolution, center_lat_rad = calculate_pixel_resolution(bounds)
 
         # 创建图形
         fig, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
@@ -325,11 +342,13 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             edgecolor=edge_color,
             linewidth=default_width,
         )
-        plot_markers_with_icons(ax, tree_points, hole_boundary, "Tree")
+        plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
+        plot_markers(ax, shrub_tree_points, hole_boundary, "ShrubTree")
+        plot_markers(ax, palm_tree_points, hole_boundary, "PalmTree")
+        plot_markers(ax, pine_tree_points, hole_boundary, "PineTree")
         # plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
         # plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
         # plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
-
         # 在所有内容绘制完成后，设置坐标轴属性
         ax.set_aspect("equal")  # 先设置为等比例
 
