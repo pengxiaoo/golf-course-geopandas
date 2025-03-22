@@ -1,18 +1,130 @@
 import json
+from enum import Enum
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from shapely.geometry import Polygon, Point, LineString
+from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
 from scipy.ndimage import gaussian_filter1d
 import os
 import logging
 import numpy as np
 
+class ItemCategory(Enum):
+    Polygon = "Polygon"
+    Line = "Line"
+    Marker = "Marker"
+
+class ItemType(Enum):
+    # polygons
+    TeeboxTrace = "TeeboxTrace"
+    FairwayTrace = "FairwayTrace"
+    GreenTrace = "GreenTrace"
+    BunkerTrace = "BunkerTrace"
+    VegetationTrace = "VegetationTrace"
+    WaterTrace = "WaterTrace"
+    HoleBoundary = "HoleBoundary"
+    # lines
+    WaterPath = "WaterPath"
+    CartpathTrace = "CartpathTrace"
+    CartpathPath = "CartpathPath"
+    # markers
+    LeafyTree = "LeafyTree"
+    ShrubTree = "ShrubTree"
+    PalmTree = "PalmTree"
+    PineTree = "PineTree"
+    Green = "Green"
+    Approach = "Approach"
+    Tee = "Tee"
+    
+class Item:
+    def __init__(self, type: ItemType, category: ItemCategory):
+        self.type = type
+        self.category = category
+        
+class Polygon(Item):
+    def __init__(self, type: ItemType, color: str, texture: str=None):
+        super().__init__(type, ItemCategory.Polygon)
+        self.color = color
+        self.texture = f'textures/{texture}.png' if texture else None
+        
+class Line(Item):
+    def __init__(self, type: ItemType, color: str, texture: str=None, line_width: float=0.0):
+        super().__init__(type, ItemCategory.Line)
+        self.color = color
+        self.texture = f'textures/{texture}.png' if texture else None
+        self.line_width = line_width
+class Marker(Item):
+    def __init__(self, type: ItemType, color: str, symbol_icon: str=None, img_icon: str=None, base_size: int=100):
+        super().__init__(type, ItemCategory.Marker)
+        self.color = color
+        self.symbol_icon = symbol_icon
+        self.img_icon = f'icons/{img_icon}.png' if img_icon else None
+        self.base_size = base_size
+
+# polygons
+teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen")
+fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen")
+greenTrace = Polygon(ItemType.GreenTrace, "lawngreen")
+bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow")
+vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen")
+waterTrace = Polygon(ItemType.WaterTrace, "skyblue")
+holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen")
+# lines
+waterPath = Line(ItemType.WaterPath, "skyblue", line_width=2.0)
+cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5)
+cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5)
+# markers
+leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^", img_icon="leafy_tree")
+shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="+", img_icon="shrub_tree")
+palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o", img_icon="palm_tree")
+pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="x", img_icon="pine_tree", base_size=100)
+green = Marker(ItemType.Green, "white", symbol_icon="o", img_icon="green", base_size=100)
+approach = Marker(ItemType.Approach, "white", symbol_icon="o", img_icon="approach", base_size=100)
+tee = Marker(ItemType.Tee, "white", symbol_icon="o", img_icon="tee", base_size=100)
+
+def get_item_by_type(item_type: ItemType):
+    if item_type == ItemType.TeeboxTrace.value:
+        return teeboxTrace
+    elif item_type == ItemType.FairwayTrace.value:
+        return fairwayTrace
+    elif item_type == ItemType.GreenTrace.value:
+        return greenTrace
+    elif item_type == ItemType.BunkerTrace.value:
+        return bunkerTrace
+    elif item_type == ItemType.VegetationTrace.value:
+        return vegetationTrace
+    elif item_type == ItemType.WaterTrace.value:
+        return waterTrace
+    elif item_type == ItemType.HoleBoundary.value:
+        return holeBoundary
+    elif item_type == ItemType.WaterPath.value:
+        return waterPath
+    elif item_type == ItemType.CartpathTrace.value:
+        return cartpathTrace
+    elif item_type == ItemType.CartpathPath.value:
+        return cartpathPath
+    elif item_type == ItemType.LeafyTree.value:
+        return leafyTree
+    elif item_type == ItemType.ShrubTree.value:
+        return shrubTree
+    elif item_type == ItemType.PalmTree.value:
+        return palmTree
+    elif item_type == ItemType.PineTree.value:
+        return pineTree
+    elif item_type == ItemType.Green.value:
+        return green
+    elif item_type == ItemType.Approach.value:
+        return approach
+    elif item_type == ItemType.Tee.value:
+        return tee
+    else:
+        logger.warning(f"Unknown item type: {item_type}")
+        return None
+    
 script_dir = os.path.dirname(os.path.abspath(__file__))
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(f"{script_dir}/input_data/golf_course_plotting.log"),
@@ -20,74 +132,13 @@ logging.basicConfig(
     ],
 )
 smooth_sigma = 1
-geo_accuracy = 6
 dpi = 300
-max_pixels = 2000
 target_meters_per_pixel = 0.2 
 lat_to_meter_ratio = 111000
-invalid_coordinates = {
-    "longitude": -180,
-    "latitude": -90,
-}
 default_width = 0.0
 boarder_width = 0.1
 base_area = 10 * 10  # 假设10x10英寸为基准尺寸
 edge_color = "black"
-item_colors = {
-    # the following are polygons
-    "TeeboxTrace": "lawngreen",
-    "FairwayTrace": "lawngreen",
-    "GreenTrace": "lawngreen",
-    "BunkerTrace": "yellow",
-    "VegetationTrace": "seagreen",
-    "WaterTrace": "skyblue",
-    "HoleBoundary": "forestgreen",  # boundary, i.e. the biggest polygon
-    # the following are lines
-    "WaterPath": "skyblue",
-    "CartpathTrace": "lightgrey",
-    "CartpathPath": "lightgrey",
-    # the following are dots or small cluster of dots
-    "LeafyTree": "darkgreen",
-    "ShrubTree": "darkgreen",
-    "PalmTree": "darkgreen",
-    "PineTree": "darkgreen",
-    "Green": "white",
-    "Approach": "white",
-    "Tee": "white",
-}
-item_markers = {
-    "LeafyTree": "^",
-    "ShrubTree": "+",
-    "PalmTree": "o",
-    "PineTree": "x",
-    "Green": "o",
-    "Approach": "o",
-    "Tee": "o",
-}
-item_marker_icon_paths = {
-    # create random icons initially. after success, we will have designer to provide better icons
-    "LeafyTree": "icons/leafy_tree.png",
-    "ShrubTree": "icons/shrub_tree.png",
-    "PalmTree": "icons/palm_tree.png",
-    "PineTree": "icons/pine_tree.png",
-    "Green": "icons/green.webp",
-    "Approach": "icons/approach.png",
-    "Tee": "icons/tee.png",
-}
-item_marker_base_size = {
-    # todo: need to scale according to the figure size
-    "LeafyTree": 200,
-    "ShrubTree": 200,
-    "PalmTree": 200,
-    "PineTree": 200,
-    "Green": 100,
-    "Approach": 100,
-    "Tee": 100,
-}
-line_widths = {
-    "WaterPath": 2.0,
-    "CartpathTrace": default_width,
-}
 fairway_colors = [
     "lawngreen",
     "forestgreen",
@@ -111,17 +162,17 @@ def get_smooth_polygon(coords):
         coords.append(coords[0])
     smoothed_coords = smooth_coordinates(coords)
     try:
-        return Polygon(smoothed_coords)
+        return ShapelyPolygon(smoothed_coords)
     except ValueError as e:
         logger.warning(f"创建多边形失败: {e}")
         return None
 
 
-def get_marker_scale_size(ax, item_type):
+def get_marker_scale_size(ax, marker: Marker):
     fig_width, fig_height = ax.figure.get_size_inches()
     fig_area = fig_width * fig_height
     scale_factor = fig_area / base_area
-    marker_scaled_size = item_marker_base_size[item_type] * scale_factor
+    marker_scaled_size = marker.base_size * scale_factor
     return marker_scaled_size
 
 
@@ -131,40 +182,41 @@ def get_stripe_scale_factor(ax):
     scale_factor = fig_area / base_area
     base_spaces = 10
     stripe_scale_factor = max(1, int(base_spaces * scale_factor))
-    logger.warning(f"stripe_scale_factor: {stripe_scale_factor}")
+    logger.info(f"stripe_scale_factor: {stripe_scale_factor}")
     return stripe_scale_factor
 
 
-def plot_markers(ax, points, boundary, item_type, zorder=10):
-    if points is None or len(points) == 0:
+def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
+    if coords is None or len(coords) == 0:
         return
+    if marker.type == ItemType.Tee.value or marker.type == ItemType.Green.value or marker.type == ItemType.Approach.value:
+        logger.warning(f"marker: {marker.type}, coords: {coords}")
     x, y = [], []
-    for point in points:
-        point_obj = Point(point)
-        if boundary.contains(point_obj):
-            x.append(point[0])
-            y.append(point[1])
-    scaled_size = get_marker_scale_size(ax, item_type)
+    for coord in coords:
+        coord_obj = Point(coord)
+        if boundary.contains(coord_obj):
+            x.append(coord[0])
+            y.append(coord[1])
+    scaled_size = get_marker_scale_size(ax, marker)
     ax.scatter(
         x,
         y,
-        color=item_colors[item_type],
-        marker=item_markers[item_type],
+        color=marker.color,
+        marker=marker.symbol_icon,
         s=scaled_size,
-        label=item_type,
+        label=marker.type,
         zorder=zorder,
     )
 
 
 # todo: has bugs
-def plot_markers_with_icons(ax, points, hole_boundary, item_type):
+def plot_markers_with_icons(ax, points, hole_boundary, marker: Marker):
     if points is None or len(points) == 0:
         return
     for point in points:
         if inside_polygon(point, hole_boundary):
-            scaled_size = get_marker_scale_size(ax, item_type)
-            icon_path = item_marker_icon_paths[item_type]
-            icon = plt.imread(icon_path)
+            scaled_size = get_marker_scale_size(ax, marker)
+            icon = plt.imread(marker.img_icon)
             imagebox = OffsetImage(icon, zoom=scaled_size)
             ab = AnnotationBbox(imagebox, (point[0], point[1]), frameon=False, pad=0)
             ax.add_artist(ab)
@@ -210,114 +262,122 @@ def calculate_pixel_resolution(bounds):
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
     hole = holes[hole_number - 1]
+    (green_data, approach_data, tee_data) = (
+        hole.get("greenGPSCoordinate", None),
+        hole.get("approachGPSCoordinate", None),
+        hole.get("teeGPSCoordinate", None),
+    )
+    green_coord = (green_data["longitude"], green_data["latitude"]) if green_data else None
+    approach_coord = (approach_data["longitude"], approach_data["latitude"]) if approach_data else None
+    tee_coord = (tee_data["longitude"], tee_data["latitude"]) if tee_data else None
+    markers = []
+    if green_coord:
+        markers.append((green, [green_coord]))
+    if approach_coord:
+        markers.append((approach, [approach_coord]))
+    if tee_coord:
+        markers.append((tee, [tee_coord]))
+    hole_boundary = None
     geometries = []
     attributes = []
-    hole_boundary = None
-    (green, approach, tee) = (
-        hole.get("greenGPSCoordinate", invalid_coordinates),
-        hole.get("approachGPSCoordinate", invalid_coordinates),
-        hole.get("teeGPSCoordinate", invalid_coordinates),
-    )
-    green_coord = (green["longitude"], green["latitude"])
-    approach_coord = (approach["longitude"], approach["latitude"])
-    tee_coord = (tee["longitude"], tee["latitude"])
     # record the hole boundary first
-    for item in hole["gpsItems"]:
-        item_type = item["itemType"]
-        if item_type == "HoleBoundary":
+    for gpsItem in hole["gpsItems"]:
+        item_type = gpsItem["itemType"]
+        item = get_item_by_type(item_type)
+        if item == holeBoundary:
             coords = [
-                (point["longitude"], point["latitude"]) for point in item["shape"]
+                (point["longitude"], point["latitude"]) for point in gpsItem["shape"]
             ]
             hole_boundary = get_smooth_polygon(coords)
             if hole_boundary:
                 geometries.append(hole_boundary)
                 attributes.append(
-                    {"itemType": item_type, "color": item_colors[item_type]}
+                    {"itemType": holeBoundary.type, "color": holeBoundary.color}
                 )
             break
     # record the rest of the items, other than hole boundary
-    leafy_tree_points = []
-    shrub_tree_points = []
-    palm_tree_points = []
-    pine_tree_points = []
-    for item in hole["gpsItems"]:
-        item_type = item["itemType"]
-        if item_type == "HoleBoundary":
+    for gpsItem in hole["gpsItems"]:
+        item_type = gpsItem["itemType"]
+        item = get_item_by_type(item_type)
+        if item == holeBoundary:
             continue
-        coords = [(point["longitude"], point["latitude"]) for point in item["shape"]]
+        coords = [(point["longitude"], point["latitude"]) for point in gpsItem["shape"]]
         if len(coords) == 0:
             continue
-        if item_type == "LeafyTree":
-            leafy_tree_points.extend(coords)
-        elif item_type == "ShrubTree":
-            shrub_tree_points.extend(coords)
-        elif item_type == "PalmTree":
-            palm_tree_points.extend(coords)
-        elif item_type == "PineTree":
-            pine_tree_points.extend(coords)
-        elif item_type == "CartpathTrace" or item_type == "WaterPath":
+        if isinstance(item, Marker):
+            markers.append((item, coords))
+        elif isinstance(item, Line):
             coords = [coord for coord in coords if inside_polygon(coord, hole_boundary)]
             if len(coords) > 1:
-                line = LineString(coords)
-                geometries.append(line)
+                geometries.append(LineString(coords))
                 attributes.append(
                     {
-                        "itemType": item_type,
-                        "color": item_colors[item_type],
-                        "lineWidth": line_widths[item_type],
+                        "itemType": item.type,
+                        "color": item.color,
+                        "lineWidth": item.line_width,
                     }
                 )
         else:
-            if item_type not in item_colors:
+            if item_type is None:
                 logger.warning(
-                    f"item_type not in item_colors, item_type: {item_type}, {debug_info}"
+                    f"item_type not identified, item_type: {item_type}, {debug_info}"
                 )
             if len(coords) > 2:
                 item_polygon = get_smooth_polygon(coords)
-                item_in_course = intersection_of_polygons(item_polygon, hole_boundary)
-                if item_in_course and (not item_in_course.is_empty):
-                    geometries.append(item_in_course)
+                item_intersection = intersection_of_polygons(item_polygon, hole_boundary)
+                if item_intersection and (not item_intersection.is_empty):
+                    geometries.append(item_intersection)
                     attributes.append(
-                        {"itemType": item_type, "color": item_colors[item_type]}
+                        {"itemType": item.type, "color": item.color}
                     )
     try:
-        # 先绘制所有内容
+        # check data integrity
         gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
         if "itemType" not in gdf.columns or hole_boundary is None:
-            logger.warning(
+            logger.info(
                 f"itemType not in gdf.columns, or hole_boundary is None. {debug_info}"
             )
             return
-
-        # 计算中心纬度
+        # initialize the plot
         bounds = hole_boundary.bounds
-
-        # 计算图像尺寸和分辨率
         fig_width, fig_height, adjusted_dpi, resolution, center_lat_rad = calculate_pixel_resolution(bounds)
-
-        # 创建图形
-        fig, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
+        _, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
         ax.set_facecolor("none")  # 设置坐标轴区域透明
         ax.spines["top"].set_visible(False)  # 隐藏上边框
         ax.spines["right"].set_visible(False)  # 隐藏右边框
         ax.spines["bottom"].set_visible(False)  # 隐藏下边框
         ax.spines["left"].set_visible(False)  # 隐藏左边框
-
+        ax.set_aspect("equal") 
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xlim(bounds[0], bounds[2])
+        ax.set_ylim(bounds[1], bounds[3])
+        ax.set_aspect(1 / np.cos(center_lat_rad))
+        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        logger.info(f"Figure size (inches): width={fig_width}, height={fig_height}")
+        logger.info(f"Resolution: {resolution:.2f} meters/pixel")
+        logger.info(
+            f"Final pixels: width={fig_width * adjusted_dpi}, height={fig_height * adjusted_dpi}"
+        )
+        
+        # plot hole boundary
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
         hole_boundary_gdf.plot(
             ax=ax,
-            color=item_colors["HoleBoundary"],
+            color=holeBoundary.color,
             edgecolor=edge_color,
             linewidth=boarder_width,
         )
-
         for _, row in gdf.iterrows():
-            if isinstance(row.geometry, LineString):  # 自定义线宽
+            if isinstance(row.geometry, LineString):
+                # plot lines
                 x, y = row.geometry.xy
                 ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"], zorder=5)
-            elif row["itemType"] == "GreenTrace":  # 延后绘制 GreenTrace
+            elif row["itemType"] == greenTrace.type:
+                # plot green trace later
                 continue
-            elif row["itemType"] == "FairwayTrace":
+            elif row["itemType"] == fairwayTrace.type:
+                # plot fairway trace
                 stripe_scale_factor = get_stripe_scale_factor(ax)
                 hatch_pattern = "\\" + " " * stripe_scale_factor
                 gpd.GeoSeries([row.geometry]).plot(
@@ -329,50 +389,24 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                     alpha=0.3,
                 )
             else:
+                # plot polygons
                 gpd.GeoSeries([row.geometry]).plot(
                     ax=ax,
                     color=row["color"],
                     edgecolor=edge_color,
                     linewidth=default_width,
                 )
-        green_trace = gdf[gdf["itemType"] == "GreenTrace"]
+        # plot green trace
+        green_trace = gdf[gdf["itemType"] == greenTrace.type]
         green_trace.plot(
             ax=ax,
             color=green_trace["color"],
             edgecolor=edge_color,
             linewidth=default_width,
         )
-        plot_markers(ax, leafy_tree_points, hole_boundary, "LeafyTree")
-        plot_markers(ax, shrub_tree_points, hole_boundary, "ShrubTree")
-        plot_markers(ax, palm_tree_points, hole_boundary, "PalmTree")
-        plot_markers(ax, pine_tree_points, hole_boundary, "PineTree")
-        # plot_markers_with_icons(ax, [green_coord], hole_boundary, "Green")
-        # plot_markers_with_icons(ax, [approach_coord], hole_boundary, "Approach")
-        # plot_markers_with_icons(ax, [tee_coord], hole_boundary, "Tee")
-        # 在所有内容绘制完成后，设置坐标轴属性
-        ax.set_aspect("equal")  # 先设置为等比例
-
-        # 隐藏坐标轴刻度和标签
-        ax.set_xticks([])
-        ax.set_yticks([])
-
-        # 调整坐标轴范围，不添加额外的边距
-        ax.set_xlim(bounds[0], bounds[2])
-        ax.set_ylim(bounds[1], bounds[3])
-
-        # 设置图形边距为0
-        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
-
-        # 最后再设置正确的纵横比
-        ax.set_aspect(1 / np.cos(center_lat_rad))
-
-        logger.info(f"Figure size (inches): width={fig_width}, height={fig_height}")
-        logger.info(f"Resolution: {resolution:.2f} meters/pixel")
-        logger.info(
-            f"Final pixels: width={fig_width * adjusted_dpi}, height={fig_height * adjusted_dpi}"
-        )
-
-        # 保存图片
+        for marker in markers:
+            plot_markers(ax, marker[0], marker[1], hole_boundary)
+            
         plt.savefig(
             f"{output_folder_path}/{club_id}_{course_id}_{hole_number}.png",
             dpi=adjusted_dpi,
@@ -383,7 +417,6 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         )
     except Exception as e:
         logger.info(f"Exception: {e}, {debug_info}")
-        raise
     finally:
         plt.close("all")
 
