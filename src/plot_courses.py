@@ -4,13 +4,10 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString
-import numpy as np
 from hole_item import ItemType, ItemStyle, Polygon, Line, Marker
-from utils import get_smooth_polygon, logger, root_dir
+from utils import logger, root_dir
+import utils
 
-dpi = 300
-target_meters_per_pixel = 0.2
-lat_to_meter_ratio = 111000
 default_width = 0.0
 boarder_width = 0.1
 base_area = 10 * 10  # 假设10x10英寸为基准尺寸
@@ -122,12 +119,13 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
         )
     elif marker.style == ItemStyle.ImageFill:
         try:
+            # todo: fix bugs here
             icon = plt.imread(marker.img_icon)
             for i in range(len(x)):
                 imagebox = OffsetImage(icon, zoom=scaled_size)
                 ab = AnnotationBbox(
-                    imagebox, 
-                    (x[i], y[i]), 
+                    imagebox,
+                    (x[i], y[i]),
                     frameon=False,
                     pad=0,
                     box_alignment=(0.5, 0.5),
@@ -139,43 +137,6 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
             logger.warning(f"Error plotting image: {e}")
     else:
         logger.warning(f"Unknown marker style: {marker.style}")
-
-
-def inside_polygon(coord, polygon):
-    point = Point(coord)
-    return polygon and polygon.contains(point)
-
-
-def intersection_of_polygons(polygon1, polygon2):
-    try:
-        if not polygon1 or not polygon2:
-            return None
-        if not polygon1.is_valid:
-            return None
-        if not polygon2.is_valid:
-            return None
-        return polygon1.intersection(polygon2)
-    except Exception as e:
-        logger.warning(f"计算多边形相交时出错: {e}")
-        return None
-
-
-def calculate_pixel_resolution(bounds):
-    x_min, y_min, x_max, y_max = bounds
-    center_lat = (y_min + y_max) / 2
-    center_lat_rad = np.pi * center_lat / 180
-    width_meters = (x_max - x_min) * lat_to_meter_ratio * np.cos(center_lat_rad)
-    height_meters = (y_max - y_min) * lat_to_meter_ratio
-
-    # 计算需要的像素数
-    pixels_width = int(width_meters / target_meters_per_pixel)
-    pixels_height = int(height_meters / target_meters_per_pixel)
-
-    # 计算所需的figure尺寸和dpi
-    fig_width = pixels_width / dpi
-    fig_height = pixels_height / dpi
-
-    return fig_width, fig_height, dpi, target_meters_per_pixel, center_lat_rad
 
 
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
@@ -207,7 +168,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             coords = [
                 (point["longitude"], point["latitude"]) for point in gpsItem["shape"]
             ]
-            hole_boundary = get_smooth_polygon(coords)
+            hole_boundary = utils.get_smooth_polygon(coords)
             if hole_boundary:
                 geometries.append(hole_boundary)
                 attributes.append(
@@ -226,7 +187,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         if isinstance(item, Marker):
             markers.append((item, coords))
         elif isinstance(item, Line):
-            coords = [coord for coord in coords if inside_polygon(coord, hole_boundary)]
+            coords = [coord for coord in coords if utils.inside_polygon(coord, hole_boundary)]
             if len(coords) > 1:
                 geometries.append(LineString(coords))
                 attributes.append(
@@ -242,8 +203,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                     f"item_type not identified, item_type: {item_type}, {debug_info}"
                 )
             if len(coords) > 2:
-                item_polygon = get_smooth_polygon(coords)
-                item_intersection = intersection_of_polygons(item_polygon, hole_boundary)
+                item_polygon = utils.get_smooth_polygon(coords)
+                item_intersection = utils.intersection_of_polygons(item_polygon, hole_boundary)
                 if item_intersection and (not item_intersection.is_empty):
                     geometries.append(item_intersection)
                     attributes.append(
@@ -258,8 +219,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             )
             return
         # initialize the plot
-        bounds = hole_boundary.bounds
-        fig_width, fig_height, adjusted_dpi, resolution, center_lat_rad = calculate_pixel_resolution(bounds)
+        fig_width, fig_height, adjusted_dpi, resolution, aspect_ratio = utils.calculate_pixel_resolution(*hole_boundary.bounds)
         _, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
         ax.set_facecolor("none")  # 设置坐标轴区域透明
         ax.spines["top"].set_visible(False)  # 隐藏上边框
@@ -269,9 +229,9 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         ax.set_aspect("equal")
         ax.set_xticks([])
         ax.set_yticks([])
-        ax.set_xlim(bounds[0], bounds[2])
-        ax.set_ylim(bounds[1], bounds[3])
-        ax.set_aspect(1 / np.cos(center_lat_rad))
+        ax.set_xlim(hole_boundary.bounds[0], hole_boundary.bounds[2])
+        ax.set_ylim(hole_boundary.bounds[1], hole_boundary.bounds[3])
+        ax.set_aspect(aspect_ratio)
         plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
         logger.info(f"Figure size (inches): width={fig_width}, height={fig_height}")
         logger.info(f"Resolution: {resolution:.2f} meters/pixel")
@@ -299,7 +259,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 # plot fairway trace
                 stripe_scale_factor = get_stripe_scale_factor(ax)
                 hatch_pattern = "\\" + " " * stripe_scale_factor
-                gpd.GeoSeries([row.geometry]).plot(
+                fairway_trace = gpd.GeoSeries([row.geometry])
+                fairway_trace.plot(
                     ax=ax,
                     color=fairway_colors[0],
                     edgecolor=fairway_colors[0],
@@ -309,7 +270,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 )
             else:
                 # plot polygons
-                gpd.GeoSeries([row.geometry]).plot(
+                polygon_trace = gpd.GeoSeries([row.geometry])
+                polygon_trace.plot(
                     ax=ax,
                     color=row["color"],
                     edgecolor=edge_color,
@@ -335,7 +297,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             transparent=True,
         )
     except Exception as e:
-        logger.info(f"Exception: {e}, {debug_info}")
+        logger.error(f"Exception: {e}, {debug_info}")
     finally:
         plt.close("all")
 
