@@ -2,11 +2,16 @@ import os
 import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import matplotlib.transforms as mtransforms
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString
 from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
 from utils import logger, root_dir
 import utils
+import numpy as np
+from matplotlib.patches import Rectangle, PathPatch
+from matplotlib.path import Path
+
 
 default_width = 0.0
 boarder_width = 0.1
@@ -19,7 +24,7 @@ fairway_colors = [
 
 # polygons
 teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen")
-fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen")
+fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", texture="fairway", style=ItemStyle.TextureFill)
 greenTrace = Polygon(ItemType.GreenTrace, "lawngreen")
 bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow")
 vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen")
@@ -87,16 +92,6 @@ def get_marker_scale_size(ax, marker: Marker):
     return marker_scaled_size
 
 
-def get_stripe_scale_factor(ax):
-    fig_width, fig_height = ax.figure.get_size_inches()
-    fig_area = fig_width * fig_height
-    scale_factor = fig_area / base_area
-    base_spaces = 10
-    stripe_scale_factor = max(1, int(base_spaces * scale_factor))
-    logger.info(f"stripe_scale_factor: {stripe_scale_factor}")
-    return stripe_scale_factor
-
-
 def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
     if coords is None or len(coords) == 0:
         return
@@ -140,13 +135,75 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
 
 
 def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color, line_width=default_width, alpha=1.0):
-    geo_series.plot(
-        ax=ax,
-        color=item.color,
-        edgecolor=edge_color,
-        linewidth=line_width,
-        alpha=alpha,
-    )
+    if item.style == ItemStyle.ColorFill:
+        geo_series.plot(
+            ax=ax,
+            color=item.color,
+            edgecolor=edge_color,
+            linewidth=line_width,
+            alpha=alpha,
+        )
+    elif item.style == ItemStyle.TextureFill:
+        try:
+            texture_img = plt.imread(item.texture)
+            bounds = geo_series.total_bounds
+            width = bounds[2] - bounds[0]
+            height = bounds[3] - bounds[1]
+            
+            # 创建平铺纹理
+            # 设置纹理基础大小（在经纬度坐标系中）
+            base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
+            
+            # 计算需要多少个纹理来覆盖整个区域
+            nx = int(np.ceil(width / base_size))
+            ny = int(np.ceil(height / base_size))
+            
+            logger.warning(f"Tiling: {nx}x{ny} tiles")
+            
+            # 创建裁剪路径
+            polygon = geo_series.iloc[0]
+            coords = polygon.exterior.coords
+            path = Path(coords)
+            patch = PathPatch(path, facecolor='none')
+            ax.add_patch(patch)
+            
+            # 为每个网格创建纹理
+            for i in range(nx):
+                for j in range(ny):
+                    x = bounds[0] + i * base_size
+                    y = bounds[1] + j * base_size
+                    
+                    img = ax.imshow(texture_img,
+                                  extent=[x, x + base_size, y, y + base_size],
+                                  alpha=0.7,
+                                  zorder=2,
+                                  aspect='auto',
+                                  interpolation='bilinear')
+                    img.set_clip_path(patch)
+            
+            # 绘制多边形边界
+            geo_series.plot(
+                ax=ax,
+                facecolor='none',
+                edgecolor=edge_color,
+                linewidth=line_width,
+                zorder=3
+            )
+            logger.warning("Polygon border drawn")
+            
+        except Exception as e:
+            logger.error(f"Error in texture plotting: {str(e)}")
+            logger.error(f"Error details: {e.__class__.__name__}")
+            # 如果纹理加载失败,回退到纯色填充
+            geo_series.plot(
+                ax=ax,
+                color=item.color, 
+                edgecolor=edge_color,
+                linewidth=line_width,
+                alpha=alpha
+            )
+    else:
+        logger.warning(f"Unknown polygon style: {item.style}")
 
 
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
