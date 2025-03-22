@@ -15,7 +15,7 @@ base_area = 10 * 10  # 假设10x10英寸为基准尺寸
 
 # polygons
 teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen", zorder=9)
-fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", texture="fairway", style=ItemStyle.TextureFill, zorder=2)
+fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", style=ItemStyle.TextureFill, zorder=2)
 greenTrace = Polygon(ItemType.GreenTrace, "lawngreen", zorder=9)
 bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow", zorder=1)
 vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen", zorder=1)
@@ -26,13 +26,13 @@ waterPath = Line(ItemType.WaterPath, "skyblue", line_width=2.0)
 cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5, zorder=11)
 cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5, zorder=12)
 # markers
-leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^", img_icon="leafy_tree")
-shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*", img_icon="shrub_tree")
-palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o", img_icon="palm_tree")
-pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|", img_icon="pine_tree")
-green = Marker(ItemType.Green, "white", symbol_icon="o", img_icon="green", base_size=20)
-approach = Marker(ItemType.Approach, "white", symbol_icon="o", img_icon="approach", base_size=20)
-tee = Marker(ItemType.Tee, "white", symbol_icon="o", img_icon="tee", base_size=20)
+leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^")
+shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*")
+palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o")
+pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|")
+green = Marker(ItemType.Green, "white", symbol_icon="o", base_size=10)
+approach = Marker(ItemType.Approach, "white", symbol_icon="o", base_size=10)
+tee = Marker(ItemType.Tee, "white", symbol_icon="o", base_size=10)
 
 
 def get_item_by_type(item_type: ItemType):
@@ -79,7 +79,7 @@ def get_marker_scale_size(ax, marker: Marker):
     fig_width, fig_height = ax.figure.get_size_inches()
     fig_area = fig_width * fig_height
     scale_factor = fig_area / base_area
-    marker_scaled_size = marker.base_size * scale_factor
+    marker_scaled_size = marker.base_size * scale_factor * 0.01
     return marker_scaled_size
 
 
@@ -105,7 +105,7 @@ def plot_markers(ax, marker: Marker, coords, boundary):
         )
     elif marker.style == ItemStyle.ImageFill:
         try:
-            # todo: fix bugs here
+            logger.warning(f"Plotting image: {marker.img_icon}, scaled_size: {scaled_size}")
             icon = plt.imread(marker.img_icon)
             for i in range(len(x)):
                 imagebox = OffsetImage(icon, zoom=scaled_size)
@@ -120,7 +120,7 @@ def plot_markers(ax, marker: Marker, coords, boundary):
                 ax.add_artist(ab)
                 ab.zorder = marker.zorder
         except Exception as e:
-            logger.warning(f"Error plotting image: {e}")
+            logger.warning(f"Error plotting image: {e}, marker.type: {marker.type}")
     else:
         logger.warning(f"Unknown marker style: {marker.style}")
 
@@ -324,6 +324,8 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             hole_count = len(holes)
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path)
+                break
+            break
 
 
 if __name__ == "__main__":

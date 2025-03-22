@@ -47,11 +47,11 @@ class Item:
 
 
 class Polygon(Item):
-    def __init__(self, type: ItemType, color: str, texture: str = None, style: ItemStyle = ItemStyle.ColorFill,
+    def __init__(self, type: ItemType, color: str, style: ItemStyle = ItemStyle.TextureFill,
                  zorder: int = 0):
         super().__init__(type, ItemCategory.Polygon, style, color, zorder)
-        self.texture = f'{root_dir}/textures/{texture}.png' if texture else None
-        assert style == ItemStyle.ColorFill or self.texture is not None, "TextureFill style requires a texture"
+        typeStr = type.value
+        self.texture = f'{root_dir}/textures/{typeStr}.png'
 
 
 class Line(Item):
@@ -60,14 +60,13 @@ class Line(Item):
         super().__init__(type, ItemCategory.Line, style, color, zorder)
         self.texture = f'{root_dir}/textures/{texture}.png' if texture else None
         self.line_width = line_width
-        assert style == ItemStyle.ColorFill or self.texture is not None, "TextureFill style requires a texture"
 
 
 class Marker(Item):
-    def __init__(self, type: ItemType, color: str, symbol_icon: str = None, img_icon: str = None, base_size: int = 100,
-                 style: ItemStyle = ItemStyle.ColorFill, zorder: int = 20):
+    def __init__(self, type: ItemType, color: str, symbol_icon: str = None, base_size: int = 40,
+                 style: ItemStyle = ItemStyle.ImageFill, zorder: int = 20):
         super().__init__(type, ItemCategory.Marker, style, color, zorder)
         self.symbol_icon = symbol_icon
-        self.img_icon = f'{root_dir}/icons/{img_icon}.png' if img_icon else None
+        typeStr = type.value
+        self.img_icon = f'{root_dir}/icons/{typeStr}.png'
         self.base_size = base_size
-        assert style == ItemStyle.ColorFill or self.img_icon is not None, "ImageFill style requires an image icon"
