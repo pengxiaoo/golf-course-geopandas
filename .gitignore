@@ -3,3 +3,5 @@ output_data/*
 .DS_Store
 .venv
 input_data/golf_course_plotting.log
+__pycache__/*
+src/__pycache__/*

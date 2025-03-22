@@ -1,65 +1,25 @@
+import os
 import json
-from enum import Enum
 import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
+from shapely.geometry import Point, LineString, Polygon
 from scipy.ndimage import gaussian_filter1d
-import os
-import logging
 import numpy as np
+from hole_item import ItemType, ItemStyle, Polygon, Line, Marker
+from utils import get_smooth_polygon, logger, root_dir
 
-class ItemCategory(Enum):
-    Polygon = "Polygon"
-    Line = "Line"
-    Marker = "Marker"
-
-class ItemType(Enum):
-    # polygons
-    TeeboxTrace = "TeeboxTrace"
-    FairwayTrace = "FairwayTrace"
-    GreenTrace = "GreenTrace"
-    BunkerTrace = "BunkerTrace"
-    VegetationTrace = "VegetationTrace"
-    WaterTrace = "WaterTrace"
-    HoleBoundary = "HoleBoundary"
-    # lines
-    WaterPath = "WaterPath"
-    CartpathTrace = "CartpathTrace"
-    CartpathPath = "CartpathPath"
-    # markers
-    LeafyTree = "LeafyTree"
-    ShrubTree = "ShrubTree"
-    PalmTree = "PalmTree"
-    PineTree = "PineTree"
-    Green = "Green"
-    Approach = "Approach"
-    Tee = "Tee"
-    
-class Item:
-    def __init__(self, type: ItemType, category: ItemCategory):
-        self.type = type
-        self.category = category
-        
-class Polygon(Item):
-    def __init__(self, type: ItemType, color: str, texture: str=None):
-        super().__init__(type, ItemCategory.Polygon)
-        self.color = color
-        self.texture = f'textures/{texture}.png' if texture else None
-        
-class Line(Item):
-    def __init__(self, type: ItemType, color: str, texture: str=None, line_width: float=0.0):
-        super().__init__(type, ItemCategory.Line)
-        self.color = color
-        self.texture = f'textures/{texture}.png' if texture else None
-        self.line_width = line_width
-class Marker(Item):
-    def __init__(self, type: ItemType, color: str, symbol_icon: str=None, img_icon: str=None, base_size: int=100):
-        super().__init__(type, ItemCategory.Marker)
-        self.color = color
-        self.symbol_icon = symbol_icon
-        self.img_icon = f'icons/{img_icon}.png' if img_icon else None
-        self.base_size = base_size
+dpi = 300
+target_meters_per_pixel = 0.2 
+lat_to_meter_ratio = 111000
+default_width = 0.0
+boarder_width = 0.1
+base_area = 10 * 10  # 假设10x10英寸为基准尺寸
+edge_color = "black"
+fairway_colors = [
+    "lawngreen",
+    "forestgreen",
+]  # 定义两种交替的颜色
 
 # polygons
 teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen")
@@ -75,12 +35,12 @@ cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5)
 cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5)
 # markers
 leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^", img_icon="leafy_tree")
-shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="+", img_icon="shrub_tree")
+shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*", img_icon="shrub_tree")
 palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o", img_icon="palm_tree")
-pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="x", img_icon="pine_tree", base_size=100)
-green = Marker(ItemType.Green, "white", symbol_icon="o", img_icon="green", base_size=100)
-approach = Marker(ItemType.Approach, "white", symbol_icon="o", img_icon="approach", base_size=100)
-tee = Marker(ItemType.Tee, "white", symbol_icon="o", img_icon="tee", base_size=100)
+pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|", img_icon="pine_tree")
+green = Marker(ItemType.Green, "white", symbol_icon="o", img_icon="green", base_size=20)
+approach = Marker(ItemType.Approach, "white", symbol_icon="o", img_icon="approach", base_size=20)
+tee = Marker(ItemType.Tee, "white", symbol_icon="o", img_icon="tee", base_size=20)
 
 def get_item_by_type(item_type: ItemType):
     if item_type == ItemType.TeeboxTrace.value:
@@ -121,52 +81,6 @@ def get_item_by_type(item_type: ItemType):
         logger.warning(f"Unknown item type: {item_type}")
         return None
     
-script_dir = os.path.dirname(os.path.abspath(__file__))
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(f"{script_dir}/input_data/golf_course_plotting.log"),
-        logging.StreamHandler(),
-    ],
-)
-smooth_sigma = 1
-dpi = 300
-target_meters_per_pixel = 0.2 
-lat_to_meter_ratio = 111000
-default_width = 0.0
-boarder_width = 0.1
-base_area = 10 * 10  # 假设10x10英寸为基准尺寸
-edge_color = "black"
-fairway_colors = [
-    "lawngreen",
-    "forestgreen",
-]  # 定义两种交替的颜色
-
-
-def smooth_coordinates(coords):
-    longitudes, latitudes = zip(*coords)
-    smooth_longs = gaussian_filter1d(longitudes, smooth_sigma)
-    smooth_lats = gaussian_filter1d(latitudes, smooth_sigma)
-    return list(zip(smooth_longs, smooth_lats))
-
-
-def get_smooth_polygon(coords):
-    count = len(coords)
-    if count < 3:
-        logger.warning(f"坐标点数量不足以创建多边形: {count} 个点")
-        return None
-    # 确保多边形是闭合的（首尾坐标相同）
-    if coords[0] != coords[-1]:
-        coords.append(coords[0])
-    smoothed_coords = smooth_coordinates(coords)
-    try:
-        return ShapelyPolygon(smoothed_coords)
-    except ValueError as e:
-        logger.warning(f"创建多边形失败: {e}")
-        return None
-
 
 def get_marker_scale_size(ax, marker: Marker):
     fig_width, fig_height = ax.figure.get_size_inches()
@@ -189,8 +103,6 @@ def get_stripe_scale_factor(ax):
 def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
     if coords is None or len(coords) == 0:
         return
-    if marker.type == ItemType.Tee.value or marker.type == ItemType.Green.value or marker.type == ItemType.Approach.value:
-        logger.warning(f"marker: {marker.type}, coords: {coords}")
     x, y = [], []
     for coord in coords:
         coord_obj = Point(coord)
@@ -198,28 +110,24 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
             x.append(coord[0])
             y.append(coord[1])
     scaled_size = get_marker_scale_size(ax, marker)
-    ax.scatter(
-        x,
-        y,
-        color=marker.color,
-        marker=marker.symbol_icon,
-        s=scaled_size,
-        label=marker.type,
-        zorder=zorder,
-    )
-
-
-# todo: has bugs
-def plot_markers_with_icons(ax, points, hole_boundary, marker: Marker):
-    if points is None or len(points) == 0:
-        return
-    for point in points:
-        if inside_polygon(point, hole_boundary):
-            scaled_size = get_marker_scale_size(ax, marker)
-            icon = plt.imread(marker.img_icon)
-            imagebox = OffsetImage(icon, zoom=scaled_size)
-            ab = AnnotationBbox(imagebox, (point[0], point[1]), frameon=False, pad=0)
+    if marker.style == ItemStyle.ColorFill:
+        ax.scatter(
+            x,
+            y,
+            color=marker.color,
+            marker=marker.symbol_icon,
+            s=scaled_size,
+            label=marker.type,
+            zorder=zorder,
+        )
+    elif marker.style == ItemStyle.ImageFill:
+        icon = plt.imread(marker.img_icon)
+        imagebox = OffsetImage(icon, zoom=scaled_size)
+        for i in range(len(x)):
+            ab = AnnotationBbox(imagebox, (x[i], y[i]), frameon=False, pad=0)
             ax.add_artist(ab)
+    else:
+        logger.warning(f"Unknown marker style: {marker.style}")
 
 
 def inside_polygon(coord, polygon):
@@ -334,7 +242,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         # check data integrity
         gdf = gpd.GeoDataFrame(attributes, geometry=geometries)
         if "itemType" not in gdf.columns or hole_boundary is None:
-            logger.info(
+            logger.warning(
                 f"itemType not in gdf.columns, or hole_boundary is None. {debug_info}"
             )
             return
@@ -435,9 +343,9 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
 
 if __name__ == "__main__":
     input_path = os.path.join(
-        script_dir, "input_data", "golf_course_layout_samples.jsonl"
+        root_dir, "input_data", "golf_course_layout_samples.jsonl"
     )
-    output_path = os.path.join(script_dir, "output_data")
+    output_path = os.path.join(root_dir, "output_data")
     os.makedirs(os.path.dirname(input_path), exist_ok=True)
     os.makedirs(output_path, exist_ok=True)
     plot_courses(input_path, output_path)
