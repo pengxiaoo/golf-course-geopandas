@@ -19,6 +19,7 @@ smooth_sigma = 1
 dpi = 300
 target_meters_per_pixel = 0.2
 lat_to_meter_ratio = 111000
+base_area = 10 * 10  # 假设10x10英寸为基准尺寸
 
 
 def smooth_coordinates(coords):

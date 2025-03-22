@@ -47,18 +47,16 @@ class Item:
 
 
 class Polygon(Item):
-    def __init__(self, type: ItemType, color: str, style: ItemStyle = ItemStyle.TextureFill,
-                 zorder: int = 0):
+    def __init__(self, type: ItemType, color: str, style: ItemStyle = ItemStyle.TextureFill, zorder: int = 0):
         super().__init__(type, ItemCategory.Polygon, style, color, zorder)
-        typeStr = type.value
-        self.texture = f'{root_dir}/textures/{typeStr}.png'
+        self.texture = f'{root_dir}/textures/{type.value}.png'
 
 
 class Line(Item):
-    def __init__(self, type: ItemType, color: str, texture: str = None, line_width: float = 0.0,
+    def __init__(self, type: ItemType, color: str, line_width: float = 0.0,
                  style: ItemStyle = ItemStyle.ColorFill, zorder: int = 10):
         super().__init__(type, ItemCategory.Line, style, color, zorder)
-        self.texture = f'{root_dir}/textures/{texture}.png' if texture else None
+        self.texture = f'{root_dir}/textures/{type.value}.png'
         self.line_width = line_width
 
 
@@ -67,6 +65,5 @@ class Marker(Item):
                  style: ItemStyle = ItemStyle.ImageFill, zorder: int = 20):
         super().__init__(type, ItemCategory.Marker, style, color, zorder)
         self.symbol_icon = symbol_icon
-        typeStr = type.value
-        self.img_icon = f'{root_dir}/icons/{typeStr}.png'
+        self.img_icon = f'{root_dir}/icons/{type.value}.png'
         self.base_size = base_size

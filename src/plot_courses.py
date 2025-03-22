@@ -7,20 +7,18 @@ from matplotlib.path import Path
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
 from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
-from utils import logger, root_dir
+from utils import logger, root_dir, base_area
 import utils
 import numpy as np
 
-base_area = 10 * 10  # 假设10x10英寸为基准尺寸
-
 # polygons
 teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen", zorder=9)
-fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", style=ItemStyle.TextureFill, zorder=2)
+fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", zorder=2)
 greenTrace = Polygon(ItemType.GreenTrace, "lawngreen", zorder=9)
 bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow", zorder=1)
 vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen", zorder=1)
 waterTrace = Polygon(ItemType.WaterTrace, "skyblue", zorder=1)
-holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen")
+holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen", zorder=0)
 # lines
 waterPath = Line(ItemType.WaterPath, "skyblue", line_width=2.0)
 cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5, zorder=11)
@@ -157,12 +155,12 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
                     x = bounds[0] + i * base_size
                     y = bounds[1] + j * base_size
                     img = ax.imshow(texture_img,
-                                  extent=[x, x + base_size, y, y + base_size],
-                                  alpha=0.7,
-                                  zorder=item.zorder,
-                                  aspect='auto',
-                                  interpolation='bilinear',
-                                  clip_path=patch)
+                                    extent=[x, x + base_size, y, y + base_size],
+                                    alpha=0.7,
+                                    zorder=item.zorder,
+                                    aspect='auto',
+                                    interpolation='bilinear',
+                                    clip_path=patch)
             # 绘制多边形边界
             geo_series.plot(
                 ax=ax,
@@ -324,8 +322,6 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             hole_count = len(holes)
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path)
-                break
-            break
 
 
 if __name__ == "__main__":
