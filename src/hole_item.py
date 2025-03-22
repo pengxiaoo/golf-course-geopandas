@@ -38,23 +38,26 @@ class ItemType(Enum):
 
 
 class Item:
-    def __init__(self, type: ItemType, category: ItemCategory, style: ItemStyle, color: str):
+    def __init__(self, type: ItemType, category: ItemCategory, style: ItemStyle, color: str, zorder: int):
         self.type = type
         self.category = category
         self.style = style
         self.color = color
+        self.zorder = zorder
+
 
 class Polygon(Item):
-    def __init__(self, type: ItemType, color: str, texture: str = None, style: ItemStyle = ItemStyle.ColorFill):
-        super().__init__(type, ItemCategory.Polygon, style, color)
+    def __init__(self, type: ItemType, color: str, texture: str = None, style: ItemStyle = ItemStyle.ColorFill,
+                 zorder: int = 0):
+        super().__init__(type, ItemCategory.Polygon, style, color, zorder)
         self.texture = f'{root_dir}/textures/{texture}.png' if texture else None
         assert style == ItemStyle.ColorFill or self.texture is not None, "TextureFill style requires a texture"
 
 
 class Line(Item):
     def __init__(self, type: ItemType, color: str, texture: str = None, line_width: float = 0.0,
-                 style: ItemStyle = ItemStyle.ColorFill):
-        super().__init__(type, ItemCategory.Line, style, color)
+                 style: ItemStyle = ItemStyle.ColorFill, zorder: int = 10):
+        super().__init__(type, ItemCategory.Line, style, color, zorder)
         self.texture = f'{root_dir}/textures/{texture}.png' if texture else None
         self.line_width = line_width
         assert style == ItemStyle.ColorFill or self.texture is not None, "TextureFill style requires a texture"
@@ -62,8 +65,8 @@ class Line(Item):
 
 class Marker(Item):
     def __init__(self, type: ItemType, color: str, symbol_icon: str = None, img_icon: str = None, base_size: int = 100,
-                 style: ItemStyle = ItemStyle.ColorFill):
-        super().__init__(type, ItemCategory.Marker, style, color)
+                 style: ItemStyle = ItemStyle.ColorFill, zorder: int = 20):
+        super().__init__(type, ItemCategory.Marker, style, color, zorder)
         self.symbol_icon = symbol_icon
         self.img_icon = f'{root_dir}/icons/{img_icon}.png' if img_icon else None
         self.base_size = base_size

@@ -2,38 +2,29 @@ import os
 import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import matplotlib.transforms as mtransforms
+from matplotlib.patches import PathPatch
+from matplotlib.path import Path
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-from shapely.geometry import Point, LineString
+from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
 from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
 from utils import logger, root_dir
 import utils
 import numpy as np
-from matplotlib.patches import Rectangle, PathPatch
-from matplotlib.path import Path
 
-
-default_width = 0.0
-boarder_width = 0.1
 base_area = 10 * 10  # 假设10x10英寸为基准尺寸
-edge_color = "black"
-fairway_colors = [
-    "lawngreen",
-    "forestgreen",
-]  # 定义两种交替的颜色
 
 # polygons
-teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen")
-fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", texture="fairway", style=ItemStyle.TextureFill)
-greenTrace = Polygon(ItemType.GreenTrace, "lawngreen")
-bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow")
-vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen")
-waterTrace = Polygon(ItemType.WaterTrace, "skyblue")
+teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen", zorder=9)
+fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", texture="fairway", style=ItemStyle.TextureFill, zorder=2)
+greenTrace = Polygon(ItemType.GreenTrace, "lawngreen", zorder=9)
+bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow", zorder=1)
+vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen", zorder=1)
+waterTrace = Polygon(ItemType.WaterTrace, "skyblue", zorder=1)
 holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen")
 # lines
 waterPath = Line(ItemType.WaterPath, "skyblue", line_width=2.0)
-cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5)
-cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5)
+cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5, zorder=11)
+cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5, zorder=12)
 # markers
 leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^", img_icon="leafy_tree")
 shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*", img_icon="shrub_tree")
@@ -92,7 +83,7 @@ def get_marker_scale_size(ax, marker: Marker):
     return marker_scaled_size
 
 
-def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
+def plot_markers(ax, marker: Marker, coords, boundary):
     if coords is None or len(coords) == 0:
         return
     x, y = [], []
@@ -110,7 +101,7 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
             marker=marker.symbol_icon,
             s=scaled_size,
             label=marker.type,
-            zorder=zorder,
+            zorder=marker.zorder,
         )
     elif marker.style == ItemStyle.ImageFill:
         try:
@@ -127,21 +118,20 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
                     bboxprops=dict(alpha=1)
                 )
                 ax.add_artist(ab)
-                ab.zorder = zorder
+                ab.zorder = marker.zorder
         except Exception as e:
             logger.warning(f"Error plotting image: {e}")
     else:
         logger.warning(f"Unknown marker style: {marker.style}")
 
 
-def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color, line_width=default_width, alpha=1.0):
+def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
     if item.style == ItemStyle.ColorFill:
         geo_series.plot(
             ax=ax,
             color=item.color,
-            edgecolor=edge_color,
-            linewidth=line_width,
             alpha=alpha,
+            zorder=item.zorder,
         )
     elif item.style == ItemStyle.TextureFill:
         try:
@@ -149,58 +139,46 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color
             bounds = geo_series.total_bounds
             width = bounds[2] - bounds[0]
             height = bounds[3] - bounds[1]
-            
             # 创建平铺纹理
             # 设置纹理基础大小（在经纬度坐标系中）
             base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
-            
             # 计算需要多少个纹理来覆盖整个区域
             nx = int(np.ceil(width / base_size))
             ny = int(np.ceil(height / base_size))
-            
-            logger.warning(f"Tiling: {nx}x{ny} tiles")
-            
             # 创建裁剪路径
             polygon = geo_series.iloc[0]
             coords = polygon.exterior.coords
             path = Path(coords)
             patch = PathPatch(path, facecolor='none')
             ax.add_patch(patch)
-            
             # 为每个网格创建纹理
             for i in range(nx):
                 for j in range(ny):
                     x = bounds[0] + i * base_size
                     y = bounds[1] + j * base_size
-                    
                     img = ax.imshow(texture_img,
-                                  extent=[x, x + base_size, y, y + base_size],
-                                  alpha=0.7,
-                                  zorder=2,
-                                  aspect='auto',
-                                  interpolation='bilinear')
+                                    extent=[x, x + base_size, y, y + base_size],
+                                    alpha=0.7,
+                                    zorder=item.zorder,
+                                    aspect='auto',
+                                    interpolation='bilinear')
                     img.set_clip_path(patch)
-            
             # 绘制多边形边界
             geo_series.plot(
                 ax=ax,
                 facecolor='none',
-                edgecolor=edge_color,
-                linewidth=line_width,
-                zorder=3
+                zorder=item.zorder,
+                linewidth=0,
             )
-            logger.warning("Polygon border drawn")
-            
         except Exception as e:
             logger.error(f"Error in texture plotting: {str(e)}")
             logger.error(f"Error details: {e.__class__.__name__}")
             # 如果纹理加载失败,回退到纯色填充
             geo_series.plot(
                 ax=ax,
-                color=item.color, 
-                edgecolor=edge_color,
-                linewidth=line_width,
-                alpha=alpha
+                color=item.color,
+                alpha=alpha,
+                zorder=item.zorder,
             )
     else:
         logger.warning(f"Unknown polygon style: {item.style}")
@@ -286,7 +264,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             )
             return
         # initialize the plot
-        fig_width, fig_height, adjusted_dpi, resolution, aspect_ratio = utils.calculate_pixel_resolution(*hole_boundary.bounds)
+        fig_width, fig_height, adjusted_dpi, resolution, aspect_ratio = utils.calculate_pixel_resolution(
+            *hole_boundary.bounds)
         _, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
         ax.set_facecolor("none")  # 设置坐标轴区域透明
         ax.spines["top"].set_visible(False)  # 隐藏上边框
@@ -308,27 +287,16 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
 
         # plot hole boundary
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-        plot_polygon(ax, hole_boundary_gdf, holeBoundary, edge_color, boarder_width)
+        plot_polygon(ax, hole_boundary_gdf, holeBoundary)
+        # plot items inside hole boundary
         for _, row in gdf.iterrows():
             item = get_item_by_type(row["itemType"].value)
             if isinstance(row.geometry, LineString):
-                # plot lines
                 x, y = row.geometry.xy
-                ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"], zorder=5)
-            elif row["itemType"] == greenTrace.type:
-                # plot green trace later
-                continue
-            elif row["itemType"] == fairwayTrace.type:
-                # plot fairway trace
-                fairway_trace = gpd.GeoSeries([row.geometry])
-                plot_polygon(ax, fairway_trace, item, fairway_colors[0], alpha=0.3)
-            else:
-                # plot polygons
+                ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"], zorder=item.zorder)
+            elif isinstance(row.geometry, ShapelyPolygon):
                 polygon_trace = gpd.GeoSeries([row.geometry])
-                plot_polygon(ax, polygon_trace, item, row["color"])
-        # plot green trace
-        green_trace = gdf[gdf["itemType"] == greenTrace.type]
-        plot_polygon(ax, green_trace, greenTrace, green_trace["color"])
+                plot_polygon(ax, polygon_trace, item)
         for marker, coords in markers:
             plot_markers(ax, marker, coords, hole_boundary)
 
