@@ -139,7 +139,7 @@ def plot_markers(ax, marker: Marker, coords, boundary, zorder=10):
         logger.warning(f"Unknown marker style: {marker.style}")
 
 
-def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color, line_width=default_width, alpha=1):
+def plot_polygon(ax, geo_series: gpd.GeoSeries, item:Item, edge_color=edge_color, line_width=default_width, alpha=1.0):
     geo_series.plot(
         ax=ax,
         color=item.color,
@@ -253,7 +253,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
         plot_polygon(ax, hole_boundary_gdf, holeBoundary, edge_color, boarder_width)
         for _, row in gdf.iterrows():
-            item = get_item_by_type(row["itemType"])
+            item = get_item_by_type(row["itemType"].value)
             if isinstance(row.geometry, LineString):
                 # plot lines
                 x, y = row.geometry.xy
