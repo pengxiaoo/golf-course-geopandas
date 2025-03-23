@@ -17,9 +17,11 @@ logging.basicConfig(
 logger.warning(f"root_dir: {root_dir}")
 smooth_sigma = 1
 dpi = 300
-target_meters_per_pixel = 0.2
+meters_per_pixel = 0.2
 lat_to_meter_ratio = 111000
 base_area = 10 * 10  # 假设10x10英寸为基准尺寸
+marker_in_meters = 3
+marker_icon_pixels = 50
 
 
 def smooth_coordinates(coords):
@@ -70,8 +72,9 @@ def calculate_pixel_resolution(west, south, east, north):
     aspect_ratio = 1 / np.cos(center_lat_rad)
     width_meters = (east - west) * lat_to_meter_ratio * np.cos(center_lat_rad)
     height_meters = (north - south) * lat_to_meter_ratio
-    pixels_width = int(width_meters / target_meters_per_pixel)
-    pixels_height = int(height_meters / target_meters_per_pixel)
+    pixels_width = int(width_meters / meters_per_pixel)
+    pixels_height = int(height_meters / meters_per_pixel)
     fig_width = pixels_width / dpi
     fig_height = pixels_height / dpi
-    return fig_width, fig_height, dpi, target_meters_per_pixel, aspect_ratio
+    marker_pixels = marker_in_meters / meters_per_pixel  # 标记应该占用的像素数
+    return fig_width, fig_height, dpi, aspect_ratio, marker_pixels

@@ -28,9 +28,9 @@ leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^")
 shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*")
 palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o")
 pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|")
-green = Marker(ItemType.Green, "white", symbol_icon="o")
-approach = Marker(ItemType.Approach, "white", symbol_icon="o")
-tee = Marker(ItemType.Tee, "white", symbol_icon="o")
+green = Marker(ItemType.Green, "white", symbol_icon="o", zorder=21)
+approach = Marker(ItemType.Approach, "white", symbol_icon="o", zorder=21)
+tee = Marker(ItemType.Tee, "white", symbol_icon="o", zorder=21)
 
 
 def get_item_by_type(item_type: ItemType):
@@ -73,40 +73,33 @@ def get_item_by_type(item_type: ItemType):
         return None
 
 
-def get_marker_scale_size(ax, marker: Marker):
-    fig_width, fig_height = ax.figure.get_size_inches()
-    fig_area = fig_width * fig_height
-    scale_factor = fig_area / base_area
-    marker_scaled_size = marker.base_size * scale_factor * 0.01
-    return marker_scaled_size
-
-
-def plot_markers(ax, marker: Marker, coords, boundary):
+def plot_markers(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dpi):
     if coords is None or len(coords) == 0:
         return
+    logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_size: {marker_pixels}")
     x, y = [], []
     for coord in coords:
         coord_obj = Point(coord)
         if boundary.contains(coord_obj):
             x.append(coord[0])
             y.append(coord[1])
-    scaled_size = get_marker_scale_size(ax, marker)
     if marker.style == ItemStyle.ColorFill:
+        marker_size = (marker_pixels * 72 / adjusted_dpi) ** 2
         ax.scatter(
             x,
             y,
             color=marker.color,
             marker=marker.symbol_icon,
-            s=scaled_size,
+            s=marker_size,
             label=marker.type,
             zorder=marker.zorder,
         )
     elif marker.style == ItemStyle.ImageFill:
         try:
-            logger.warning(f"Plotting image: {marker.img_icon}, scaled_size: {scaled_size}")
             icon = plt.imread(marker.img_icon)
             for i in range(len(x)):
-                imagebox = OffsetImage(icon, zoom=scaled_size)
+                zoom = marker_pixels / utils.marker_icon_pixels
+                imagebox = OffsetImage(icon, zoom=zoom)
                 ab = AnnotationBbox(
                     imagebox,
                     (x[i], y[i]),
@@ -262,7 +255,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             )
             return
         # initialize the plot
-        fig_width, fig_height, adjusted_dpi, resolution, aspect_ratio = utils.calculate_pixel_resolution(
+        fig_width, fig_height, adjusted_dpi, aspect_ratio, marker_pixels = utils.calculate_pixel_resolution(
             *hole_boundary.bounds)
         _, ax = plt.subplots(figsize=(fig_width, fig_height), facecolor="none")
         ax.set_facecolor("none")  # 设置坐标轴区域透明
@@ -278,7 +271,6 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         ax.set_aspect(aspect_ratio)
         plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
         logger.info(f"Figure size (inches): width={fig_width}, height={fig_height}")
-        logger.info(f"Resolution: {resolution:.2f} meters/pixel")
         logger.info(
             f"Final pixels: width={fig_width * adjusted_dpi}, height={fig_height * adjusted_dpi}"
         )
@@ -296,7 +288,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 polygon_trace = gpd.GeoSeries([row.geometry])
                 plot_polygon(ax, polygon_trace, item)
         for marker, coords in markers:
-            plot_markers(ax, marker, coords, hole_boundary)
+            plot_markers(ax, marker, marker_pixels, coords, hole_boundary, adjusted_dpi)
 
         plt.savefig(
             f"{output_folder_path}/{club_id}_{course_id}_{hole_number}.png",
