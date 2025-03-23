@@ -7,7 +7,7 @@ from matplotlib.path import Path
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
 from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
-from utils import logger, root_dir, base_area
+from utils import logger
 import utils
 import numpy as np
 
@@ -73,7 +73,7 @@ def get_item_by_type(item_type: ItemType):
         return None
 
 
-def plot_markers(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dpi):
+def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dpi):
     if coords is None or len(coords) == 0:
         return
     logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_pixels: {marker_pixels}")
@@ -288,7 +288,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 polygon_trace = gpd.GeoSeries([row.geometry])
                 plot_polygon(ax, polygon_trace, item)
         for marker, coords in markers:
-            plot_markers(ax, marker, marker_pixels, coords, hole_boundary, adjusted_dpi)
+            plot_marker(ax, marker, marker_pixels, coords, hole_boundary, adjusted_dpi)
 
         plt.savefig(
             f"{output_folder_path}/{club_id}_{course_id}_{hole_number}.png",
@@ -318,9 +318,9 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
 
 if __name__ == "__main__":
     input_path = os.path.join(
-        root_dir, "input_data", "golf_course_layout_samples.jsonl"
+        utils.root_dir, "input_data", "golf_course_layout_samples.jsonl"
     )
-    output_path = os.path.join(root_dir, "output_data")
+    output_path = os.path.join(utils.root_dir, "output_data")
     os.makedirs(os.path.dirname(input_path), exist_ok=True)
     os.makedirs(output_path, exist_ok=True)
     plot_courses(input_path, output_path)
