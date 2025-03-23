@@ -28,9 +28,9 @@ leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^")
 shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*")
 palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o")
 pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|")
-green = Marker(ItemType.Green, "white", symbol_icon="o", base_size=10)
-approach = Marker(ItemType.Approach, "white", symbol_icon="o", base_size=10)
-tee = Marker(ItemType.Tee, "white", symbol_icon="o", base_size=10)
+green = Marker(ItemType.Green, "white", symbol_icon="o")
+approach = Marker(ItemType.Approach, "white", symbol_icon="o")
+tee = Marker(ItemType.Tee, "white", symbol_icon="o")
 
 
 def get_item_by_type(item_type: ItemType):
