@@ -21,7 +21,7 @@ meters_per_pixel = 0.2
 lat_to_meter_ratio = 111000
 base_area = 10 * 10  # 假设10x10英寸为基准尺寸
 marker_in_meters = 3
-marker_icon_pixels = 50
+marker_icon_pixels = 200
 
 
 def smooth_coordinates(coords):

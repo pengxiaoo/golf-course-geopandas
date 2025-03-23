@@ -62,7 +62,7 @@ class Line(Item):
 
 class Marker(Item):
     def __init__(self, type: ItemType, color: str, symbol_icon: str = None, base_size: int = 40,
-                 style: ItemStyle = ItemStyle.ColorFill, zorder: int = 20):
+                 style: ItemStyle = ItemStyle.ImageFill, zorder: int = 20):
         super().__init__(type, ItemCategory.Marker, style, color, zorder)
         self.symbol_icon = symbol_icon
         self.img_icon = f'{root_dir}/icons/{type.value}.png'

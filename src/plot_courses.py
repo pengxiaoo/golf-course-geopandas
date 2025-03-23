@@ -76,7 +76,7 @@ def get_item_by_type(item_type: ItemType):
 def plot_markers(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dpi):
     if coords is None or len(coords) == 0:
         return
-    logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_size: {marker_pixels}")
+    logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_pixels: {marker_pixels}")
     x, y = [], []
     for coord in coords:
         coord_obj = Point(coord)
