@@ -6,28 +6,28 @@ from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
-from hole_item import Item, ItemType, ItemStyle, Polygon, Line, Marker
+from hole_item import Item, ItemType, Polygon, Line, Marker
 from utils import logger
 import utils
 import numpy as np
 
 # polygons
-teeboxTrace = Polygon(ItemType.TeeboxTrace, "lawngreen", zorder=9)
-fairwayTrace = Polygon(ItemType.FairwayTrace, "lawngreen", zorder=2)
-greenTrace = Polygon(ItemType.GreenTrace, "lawngreen", zorder=9)
-bunkerTrace = Polygon(ItemType.BunkerTrace, "yellow", zorder=1)
-vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen", zorder=1)
-waterTrace = Polygon(ItemType.WaterTrace, "skyblue", zorder=1)
-holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen", zorder=0)
+teeboxTrace = Polygon(ItemType.TeeboxTrace, zorder=9)
+fairwayTrace = Polygon(ItemType.FairwayTrace, zorder=2)
+greenTrace = Polygon(ItemType.GreenTrace, zorder=9)
+bunkerTrace = Polygon(ItemType.BunkerTrace, zorder=1)
+vegetationTrace = Polygon(ItemType.VegetationTrace, zorder=1)
+waterTrace = Polygon(ItemType.WaterTrace, zorder=1)
+holeBoundary = Polygon(ItemType.HoleBoundary, zorder=0)
 # lines
 waterPath = Line(ItemType.WaterPath, line_width=1.0)
 cartpathTrace = Line(ItemType.CartpathTrace, line_width=0.5, zorder=11)
 cartpathPath = Line(ItemType.CartpathPath, line_width=0.5, zorder=12)
 # markers
-leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^")
-shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*")
-palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o")
-pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|")
+leafyTree = Marker(ItemType.LeafyTree)
+shrubTree = Marker(ItemType.ShrubTree)
+palmTree = Marker(ItemType.PalmTree)
+pineTree = Marker(ItemType.PineTree)
 
 
 def get_item_by_type(item_type: ItemType):
@@ -64,7 +64,7 @@ def get_item_by_type(item_type: ItemType):
         return None
 
 
-def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dpi):
+def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary):
     if coords is None or len(coords) == 0:
         return
     logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_pixels: {marker_pixels}")
@@ -74,96 +74,65 @@ def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary, adjusted_dp
         if boundary.contains(coord_obj):
             x.append(coord[0])
             y.append(coord[1])
-    if marker.style == ItemStyle.ColorFill:
-        marker_size = (marker_pixels * 72 / adjusted_dpi) ** 2
-        ax.scatter(
-            x,
-            y,
-            color=marker.color,
-            marker=marker.symbol_icon,
-            s=marker_size,
-            label=marker.type,
-            zorder=marker.zorder,
-        )
-    elif marker.style == ItemStyle.ImageFill:
-        try:
-            icon = plt.imread(marker.img_icon)
-            for i in range(len(x)):
-                zoom = marker_pixels / utils.marker_icon_pixels
-                imagebox = OffsetImage(icon, zoom=zoom)
-                ab = AnnotationBbox(
-                    imagebox,
-                    (x[i], y[i]),
-                    frameon=False,
-                    pad=0,
-                    box_alignment=(0.5, 0.5),
-                    bboxprops=dict(alpha=1)
-                )
-                ax.add_artist(ab)
-                ab.zorder = marker.zorder
-        except Exception as e:
-            logger.warning(f"Error plotting image: {e}, marker.type: {marker.type}")
-    else:
-        logger.warning(f"Unknown marker style: {marker.style}")
+    try:
+        icon = plt.imread(marker.img_icon)
+        for i in range(len(x)):
+            zoom = marker_pixels / utils.marker_icon_pixels
+            imagebox = OffsetImage(icon, zoom=zoom)
+            ab = AnnotationBbox(
+                imagebox,
+                (x[i], y[i]),
+                frameon=False,
+                pad=0,
+                box_alignment=(0.5, 0.5),
+                bboxprops=dict(alpha=1)
+            )
+            ax.add_artist(ab)
+            ab.zorder = marker.zorder
+    except Exception as e:
+        logger.warning(f"Error plotting image: {e}, marker.type: {marker.type}")
 
 
 def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
-    if item.style == ItemStyle.ColorFill:
+    try:
+        texture_img = plt.imread(item.texture)
+        bounds = geo_series.total_bounds
+        width = bounds[2] - bounds[0]
+        height = bounds[3] - bounds[1]
+        # 创建平铺纹理
+        # 设置纹理基础大小（在经纬度坐标系中）
+        base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
+        # 计算需要多少个纹理来覆盖整个区域
+        nx = int(np.ceil(width / base_size))
+        ny = int(np.ceil(height / base_size))
+        # 创建裁剪路径
+        polygon = geo_series.iloc[0]
+        coords = polygon.exterior.coords
+        path = Path(coords)
+        patch = PathPatch(path, facecolor='none', edgecolor='none')
+        ax.add_patch(patch)
+        # 为每个网格创建纹理
+        for i in range(nx):
+            for j in range(ny):
+                x = bounds[0] + i * base_size
+                y = bounds[1] + j * base_size
+                ax.imshow(texture_img,
+                    extent=[x, x + base_size, y, y + base_size],
+                    alpha=0.7,
+                    zorder=item.zorder,
+                    aspect='auto',
+                    interpolation='bilinear',
+                    clip_path=patch)
+        # 绘制多边形边界
         geo_series.plot(
             ax=ax,
-            color=item.color,
-            alpha=alpha,
+            facecolor='none',
             zorder=item.zorder,
+            linewidth=0,
         )
-    elif item.style == ItemStyle.TextureFill:
-        try:
-            texture_img = plt.imread(item.texture)
-            bounds = geo_series.total_bounds
-            width = bounds[2] - bounds[0]
-            height = bounds[3] - bounds[1]
-            # 创建平铺纹理
-            # 设置纹理基础大小（在经纬度坐标系中）
-            base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
-            # 计算需要多少个纹理来覆盖整个区域
-            nx = int(np.ceil(width / base_size))
-            ny = int(np.ceil(height / base_size))
-            # 创建裁剪路径
-            polygon = geo_series.iloc[0]
-            coords = polygon.exterior.coords
-            path = Path(coords)
-            patch = PathPatch(path, facecolor='none', edgecolor='none')
-            ax.add_patch(patch)
-            # 为每个网格创建纹理
-            for i in range(nx):
-                for j in range(ny):
-                    x = bounds[0] + i * base_size
-                    y = bounds[1] + j * base_size
-                    img = ax.imshow(texture_img,
-                                    extent=[x, x + base_size, y, y + base_size],
-                                    alpha=0.7,
-                                    zorder=item.zorder,
-                                    aspect='auto',
-                                    interpolation='bilinear',
-                                    clip_path=patch)
-            # 绘制多边形边界
-            geo_series.plot(
-                ax=ax,
-                facecolor='none',
-                zorder=item.zorder,
-                linewidth=0,
-            )
-        except Exception as e:
-            logger.error(f"Error in texture plotting: {str(e)}")
-            logger.error(f"Error details: {e.__class__.__name__}")
-            # 如果纹理加载失败,回退到纯色填充
-            geo_series.plot(
-                ax=ax,
-                color=item.color,
-                alpha=alpha,
-                zorder=item.zorder,
-            )
-    else:
-        logger.warning(f"Unknown polygon style: {item.style}")
+    except Exception as e:
+        logger.error(f"Error in texture plotting: {str(e)}")
+        logger.error(f"Error details: {e.__class__.__name__}")
 
 
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
@@ -185,7 +154,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             if hole_boundary:
                 geometries.append(hole_boundary)
                 attributes.append(
-                    {"itemType": holeBoundary.type, "color": holeBoundary.color}
+                    {"itemType": holeBoundary.type}
                 )
             break
     # record the rest of the items, other than hole boundary
@@ -221,7 +190,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 if item_intersection and (not item_intersection.is_empty):
                     geometries.append(item_intersection)
                     attributes.append(
-                        {"itemType": item.type, "color": item.color}
+                        {"itemType": item.type}
                     )
     try:
         # check data integrity
@@ -265,7 +234,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
                 polygon_trace = gpd.GeoSeries([row.geometry])
                 plot_polygon(ax, polygon_trace, item)
         for marker, coords in markers:
-            plot_marker(ax, marker, marker_pixels, coords, hole_boundary, adjusted_dpi)
+            plot_marker(ax, marker, marker_pixels, coords, hole_boundary)
 
         plt.savefig(
             f"{output_folder_path}/{club_id}_{course_id}_{hole_number}.png",
@@ -292,6 +261,8 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             # todo: for now only plot the first hole. update this later.
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path)
+                break
+            break
 
 
 if __name__ == "__main__":

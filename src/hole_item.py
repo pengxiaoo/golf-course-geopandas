@@ -32,9 +32,6 @@ class ItemType(Enum):
     ShrubTree = "ShrubTree"
     PalmTree = "PalmTree"
     PineTree = "PineTree"
-    Green = "Green"
-    Approach = "Approach"
-    Tee = "Tee"
 
 
 line_colors = {
@@ -45,32 +42,30 @@ line_colors = {
 
 
 class Item:
-    def __init__(self, type: ItemType, category: ItemCategory, style: ItemStyle, color: str, zorder: int):
+    def __init__(self, type: ItemType, category: ItemCategory, style: ItemStyle, zorder: int):
         self.type = type
         self.category = category
         self.style = style
-        self.color = color
         self.zorder = zorder
 
 
 class Polygon(Item):
-    def __init__(self, type: ItemType, color: str, style: ItemStyle = ItemStyle.TextureFill, zorder: int = 0):
-        super().__init__(type, ItemCategory.Polygon, style, color, zorder)
+    def __init__(self, type: ItemType, style: ItemStyle = ItemStyle.TextureFill, zorder: int = 0):
+        super().__init__(type, ItemCategory.Polygon, style, zorder)
         self.texture = f'{root_dir}/textures/{type.value}.png'
 
 
 class Line(Item):
     def __init__(self, type: ItemType, line_width: float = 0.0,
                  style: ItemStyle = ItemStyle.ColorFill, zorder: int = 10):
-        super().__init__(type, ItemCategory.Line, style, line_colors[type], zorder)
-        self.texture = f'{root_dir}/textures/{type.value}.png'
+        super().__init__(type, ItemCategory.Line, style, zorder)
+        self.color = line_colors[type]
         self.line_width = line_width
 
 
 class Marker(Item):
-    def __init__(self, type: ItemType, color: str, symbol_icon: str = None, base_size: int = 40,
+    def __init__(self, type: ItemType, base_size: int = 40,
                  style: ItemStyle = ItemStyle.ImageFill, zorder: int = 20):
-        super().__init__(type, ItemCategory.Marker, style, color, zorder)
-        self.symbol_icon = symbol_icon
+        super().__init__(type, ItemCategory.Marker, style, zorder)
         self.img_icon = f'{root_dir}/icons/{type.value}.png'
         self.base_size = base_size
