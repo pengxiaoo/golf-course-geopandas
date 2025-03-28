@@ -16,3 +16,8 @@ src/python/testcases/output/*
 !src/python/testcases/input/*
 node_modules/*
 *.lock
+*.log
+*.swp
+poetry.lock
+package-lock.json
+.envrc

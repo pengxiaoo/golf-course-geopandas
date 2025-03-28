@@ -1,73 +1,50 @@
 const { ipcRenderer } = require('electron')
-const dropZone = document.getElementById('dropZone')
 const fileList = document.getElementById('fileList')
 const processButton = document.getElementById('processButton')
 
 let selectedFiles = []
 
-// Disable by security html5 and javascript
-// dropZone.addEventListener('dragover', (e) => {
-//     e.preventDefault()
-//     e.stopPropagation()
-//     dropZone.classList.add('drag-over')
-// })
+let input_data_dir = null;
+let resources_dir = null;
+let output_data_dir = null;
 
-// dropZone.addEventListener('dragleave', (e) => {
-//     e.preventDefault()
-//     e.stopPropagation()
-//     dropZone.classList.remove('drag-over')
-// })
+document.querySelectorAll('.drop-zone').forEach((dropZone, index) => {
+    dropZone.addEventListener('click', async () => {
+        const folderPath = await ipcRenderer.invoke('open-folder-dialog');
 
-// dropZone.addEventListener('drop', (e) => {
-//     e.preventDefault()
-//     e.stopPropagation()
-//     dropZone.classList.remove('drag-over')
-    
-//     const files = Array.from(e.dataTransfer.files)
-//     handleFiles(files)
-// })
+        if (folderPath) {
+            console.log(`Drop Zone ${index + 1}: Selected folder ->`, folderPath);
 
-dropZone.addEventListener('click', async () => {
-    const filePaths = await ipcRenderer.invoke('open-file-dialog');
+            // Store in different variables
+            if (index === 0) input_data_dir = folderPath;
+            if (index === 1) resources_dir = folderPath;
+            if (index === 2) output_data_dir = folderPath;
 
-    if (filePaths && filePaths.length > 0) {
-        const files = Array.from(filePaths)
-        console.log('renderer.js: Files array:', files)
-        
-        handleFiles(files)
-    }
-})
+            dropZone.textContent = `Selected: ${folderPath}`;
 
-function handleFiles(files) {
-    selectedFiles = files.map(file => {
-        console.log('renderer.js: Processing file:', file)
-        const path = file.path || file.webkitRelativePath || file.name
-        console.log('renderer.js: Got path:', path)
-        return file
-    })
-    
-  
-    console.log('renderer.js: Final selected file paths:', selectedFiles)
-    // todo: the log shows selectedFiles only has the file name, not the full path. log copied below:
-    // "renderer.js: Final selected file paths: ['cb_report_for_the_past_7_days_2025-03-08T21_04_41.127598-05_00.xlsx', 'main_cb_report_2025-03-08T20_47_00.340088-05_00.csv']"
-    fileList.innerHTML = ''
-    files.forEach(file => {
-        const item = document.createElement('div')
-        const fileName = file.split('/').pop();
-        item.textContent = `${fileName} (${file || 'path not available'})`
-        fileList.appendChild(item)
-    })
-    processButton.disabled = selectedFiles.length === 0
-}
+            // Check if all folders are selected, then enable button
+            if (input_data_dir && resources_dir && output_data_dir) {
+                processButton.disabled = false;
+            }
+        }
+    });
+});
+
+
 
 processButton.addEventListener('click', async () => {
-    if (selectedFiles.length === 0) return    
+    if (!input_data_dir || !resources_dir || !output_data_dir) {
+        console.log('Please select all three folders before proceeding.');
+        return;
+    }
+
+    console.log('Processing with folders:', input_data_dir, resources_dir, output_data_dir);
 
     try {
         processButton.disabled = true
         processButton.textContent = 'Processing...'
         
-        const results = await ipcRenderer.invoke('process-files', selectedFiles)
+        const results = await ipcRenderer.invoke('change-skin', input_data_dir, resources_dir, output_data_dir)
         console.log("check: ", results);
         
         const jsonObj = JSON.parse(results);
@@ -87,11 +64,11 @@ processButton.addEventListener('click', async () => {
     } catch (error) {
         console.error('renderer.js: Error:', error)
         const errorDiv = document.createElement('div')
-        errorDiv.textContent = `Error processing files: ${error}`
+        errorDiv.textContent = `Error generating: ${error}`
         errorDiv.className = 'error'
         fileList.appendChild(errorDiv)
     } finally {
         processButton.disabled = false
-        processButton.textContent = 'Process Files'
+        processButton.textContent = 'Generate'
     }
 }) 

@@ -58,3 +58,8 @@ button:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
 } 
+
+.no-bullets {
+    list-style-type: none;
+    padding: 0;
+}

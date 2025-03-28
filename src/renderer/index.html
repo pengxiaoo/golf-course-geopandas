@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Report Polisher</title>
+    <title>Hole Skin Changer</title>
     <link rel="stylesheet" href="styles/index.css">
 </head>
+<h1>Hole Skin Changer</h1>
 <body>
     <div class="container">
-        <h1>Report Polisher</h1>
-        <div class="drop-zone" id="dropZone">
-            Drop files here or click to select
-        </div>
-        <div id="fileList"></div>
-        <button id="processButton" disabled>Process Files</button>
+        <ul class="no-bullets">
+            <li>
+                <div class="drop-zone" id="dropZone1">
+                    Please select the input data directory
+                </div>
+            </li>
+            <li>
+                <div class="drop-zone" id="dropZone2">
+                    Please select the resources directory
+                </div>
+            </li>
+            <li>
+                <div class="drop-zone" id="dropZone3">
+                    Please select the input data directory
+                </div>
+            </li>
+        </ul>
+        <button id="processButton" disabled>Generate</button>
     </div>
     <script src="js/renderer.js"></script>
 </body>
