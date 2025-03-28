@@ -261,8 +261,6 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             # todo: for now only plot the first hole. update this later.
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path)
-                break
-            break
 
 
 if __name__ == "__main__":

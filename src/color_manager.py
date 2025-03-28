@@ -11,7 +11,7 @@ class ColorManager:
         return cls._instance
 
     def _load_colors(self):
-        tree = ET.parse('colors/colors.xml')
+        tree = ET.parse('resources/colors.xml')
         root = tree.getroot()
         for color in root.findall('color'):
             name = color.get('name')
