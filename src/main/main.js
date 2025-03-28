@@ -87,7 +87,7 @@ ipcMain.handle('open-folder-dialog', async () => {
     return result.canceled ? null : result.filePaths[0];
 });
 
-ipcMain.handle('change-skin', async (event, files) => {
+ipcMain.handle('change-skin', async (event, input_data_dir, resources_dir, output_data_dir) => {
     try {
         let pythonExecutablePath = "";
         let param;
@@ -95,11 +95,20 @@ ipcMain.handle('change-skin', async (event, files) => {
 
         if (app.isPackaged) {
             basePath = process.resourcesPath
-            param = [JSON.stringify(files)]
+            param = [
+                '--input-data-dir', input_data_dir,
+                '--resources-dir', resources_dir,
+                '--output-data-dir', output_data_dir
+            ]
             pythonExecutablePath = path.join(basePath, 'python', 'hole_skin_changer');
         } else {
-            basePath = path.join(__dirname, '../python/report_polisher.py');
-            param = [basePath, JSON.stringify(files)]
+            basePath = path.join(__dirname, '../python/plot_courses.py');
+            param = [
+                basePath,
+                '--input-data-dir', input_data_dir,
+                '--resources-dir', resources_dir,
+                '--output-data-dir', output_data_dir
+            ]
             pythonExecutablePath = await getPythonPath();
         }
 
