@@ -1,6 +1,6 @@
 from enum import Enum
 from utils import root_dir
-
+from color_manager import colors
 
 class ItemCategory(Enum):
     Polygon = "Polygon"
@@ -37,6 +37,13 @@ class ItemType(Enum):
     Tee = "Tee"
 
 
+line_colors = {
+    ItemType.WaterPath: colors.get_color("water_blue"),
+    ItemType.CartpathTrace: colors.get_color("cartpath_grey"),
+    ItemType.CartpathPath: colors.get_color("cartpath_grey"),
+}
+
+
 class Item:
     def __init__(self, type: ItemType, category: ItemCategory, style: ItemStyle, color: str, zorder: int):
         self.type = type
@@ -53,9 +60,9 @@ class Polygon(Item):
 
 
 class Line(Item):
-    def __init__(self, type: ItemType, color: str, line_width: float = 0.0,
+    def __init__(self, type: ItemType, line_width: float = 0.0,
                  style: ItemStyle = ItemStyle.ColorFill, zorder: int = 10):
-        super().__init__(type, ItemCategory.Line, style, color, zorder)
+        super().__init__(type, ItemCategory.Line, style, line_colors[type], zorder)
         self.texture = f'{root_dir}/textures/{type.value}.png'
         self.line_width = line_width
 

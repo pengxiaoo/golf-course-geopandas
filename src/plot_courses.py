@@ -20,17 +20,14 @@ vegetationTrace = Polygon(ItemType.VegetationTrace, "seagreen", zorder=1)
 waterTrace = Polygon(ItemType.WaterTrace, "skyblue", zorder=1)
 holeBoundary = Polygon(ItemType.HoleBoundary, "forestgreen", zorder=0)
 # lines
-waterPath = Line(ItemType.WaterPath, "skyblue", line_width=2.0)
-cartpathTrace = Line(ItemType.CartpathTrace, "lightgrey", line_width=0.5, zorder=11)
-cartpathPath = Line(ItemType.CartpathPath, "lightgrey", line_width=0.5, zorder=12)
+waterPath = Line(ItemType.WaterPath, line_width=1.0)
+cartpathTrace = Line(ItemType.CartpathTrace, line_width=0.5, zorder=11)
+cartpathPath = Line(ItemType.CartpathPath, line_width=0.5, zorder=12)
 # markers
 leafyTree = Marker(ItemType.LeafyTree, "darkgreen", symbol_icon="^")
 shrubTree = Marker(ItemType.ShrubTree, "darkgreen", symbol_icon="*")
 palmTree = Marker(ItemType.PalmTree, "darkgreen", symbol_icon="o")
 pineTree = Marker(ItemType.PineTree, "darkgreen", symbol_icon="|")
-green = Marker(ItemType.Green, "white", symbol_icon="o", zorder=21)
-approach = Marker(ItemType.Approach, "white", symbol_icon="o", zorder=21)
-tee = Marker(ItemType.Tee, "white", symbol_icon="o", zorder=21)
 
 
 def get_item_by_type(item_type: ItemType):
@@ -62,12 +59,6 @@ def get_item_by_type(item_type: ItemType):
         return palmTree
     elif item_type == ItemType.PineTree.value:
         return pineTree
-    elif item_type == ItemType.Green.value:
-        return green
-    elif item_type == ItemType.Approach.value:
-        return approach
-    elif item_type == ItemType.Tee.value:
-        return tee
     else:
         logger.warning(f"Unknown item type: {item_type}")
         return None
@@ -178,24 +169,10 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
     hole = holes[hole_number - 1]
-    (green_data, approach_data, tee_data) = (
-        hole.get("greenGPSCoordinate", None),
-        hole.get("approachGPSCoordinate", None),
-        hole.get("teeGPSCoordinate", None),
-    )
-    green_coord = (green_data["longitude"], green_data["latitude"]) if green_data else None
-    approach_coord = (approach_data["longitude"], approach_data["latitude"]) if approach_data else None
-    tee_coord = (tee_data["longitude"], tee_data["latitude"]) if tee_data else None
-    markers = []
-    if green_coord:
-        markers.append((green, [green_coord]))
-    if approach_coord:
-        markers.append((approach, [approach_coord]))
-    if tee_coord:
-        markers.append((tee, [tee_coord]))
     hole_boundary = None
     geometries = []
     attributes = []
+    markers = []
     # record the hole boundary first
     for gpsItem in hole["gpsItems"]:
         item_type = gpsItem["itemType"]
@@ -315,8 +292,6 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             # todo: for now only plot the first hole. update this later.
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path)
-                break
-            break
 
 
 if __name__ == "__main__":
