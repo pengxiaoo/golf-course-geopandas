@@ -22,7 +22,11 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
       if (index === 1) resources_dir = folderPath;
       if (index === 2) output_data_dir = folderPath;
 
-      dropZone.textContent = `Selected: ${folderPath}`;
+      // 添加选中状态的样式类
+      dropZone.classList.add("has-selection");
+      // 缩短显示的路径
+      const shortenedPath = folderPath.split("/").slice(-2).join("/");
+      dropZone.textContent = `Selected: .../${shortenedPath}`;
 
       // Check if all folders are selected, then enable button
       if (input_data_dir && resources_dir && output_data_dir) {
