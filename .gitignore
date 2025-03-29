@@ -21,3 +21,5 @@ node_modules/*
 poetry.lock
 package-lock.json
 .envrc
+dist/*
+~/*
