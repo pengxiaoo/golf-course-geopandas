@@ -4,11 +4,7 @@ const processButton = document.getElementById("processButton");
 const abortButton = document.getElementById("abortButton");
 const previewImage = document.getElementById("previewImage");
 
-let selectedFiles = [];
-
-let input_data_dir = null;
-let resources_dir = null;
-let output_data_dir = null;
+let root_data_dir = null;
 
 document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
   dropZone.addEventListener("click", async () => {
@@ -17,10 +13,7 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
     if (folderPath) {
       console.log(`Drop Zone ${index + 1}: Selected folder ->`, folderPath);
 
-      // Store in different variables
-      if (index === 0) input_data_dir = folderPath;
-      if (index === 1) resources_dir = folderPath;
-      if (index === 2) output_data_dir = folderPath;
+      root_data_dir = folderPath;
 
       // 添加选中状态的样式类
       dropZone.classList.add("has-selection");
@@ -29,7 +22,7 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
       dropZone.textContent = `Selected: .../${shortenedPath}`;
 
       // Check if all folders are selected, then enable button
-      if (input_data_dir && resources_dir && output_data_dir) {
+      if (root_data_dir) {
         processButton.disabled = false;
       }
     }
@@ -49,16 +42,14 @@ ipcRenderer.on("clear-preview", () => {
 });
 
 processButton.addEventListener("click", async () => {
-  if (!input_data_dir || !resources_dir || !output_data_dir) {
-    console.log("Please select all three folders before proceeding.");
+  if (!root_data_dir) {
+    console.log("Please select the root directory before proceeding.");
     return;
   }
 
   console.log(
     "Processing with folders:",
-    input_data_dir,
-    resources_dir,
-    output_data_dir
+    root_data_dir
   );
 
   try {
@@ -72,9 +63,7 @@ processButton.addEventListener("click", async () => {
 
     const results = await ipcRenderer.invoke(
       "change-skin",
-      input_data_dir,
-      resources_dir,
-      output_data_dir
+      root_data_dir
     );
 
     // 如果进程被中止，直接返回，不处理结果
