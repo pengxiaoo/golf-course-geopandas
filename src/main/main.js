@@ -145,6 +145,7 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
         if (!hasShownPreview && output.includes("Generated image:")) {
           try {
             const imagePath = output.split("Generated image:")[1].trim();
+            mainWindow.webContents.session.clearCache();
             mainWindow.webContents.send("update-preview", imagePath);
             hasShownPreview = true; // 设置标志位
           } catch (e) {
