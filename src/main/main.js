@@ -100,7 +100,7 @@ ipcMain.handle('change-skin', async (event, input_data_dir, resources_dir, outpu
                 '--resources-dir', resources_dir,
                 '--output-data-dir', output_data_dir
             ]
-            pythonExecutablePath = path.join(basePath, 'python', 'hole_skin_changer');
+            pythonExecutablePath = path.join(basePath, 'python', 'plot_courses');
         } else {
             basePath = path.join(__dirname, '../python/plot_courses.py');
             param = [
