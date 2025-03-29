@@ -31,7 +31,8 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
 
 // 添加IPC监听器来更新预览图
 ipcRenderer.on("update-preview", (event, imagePath) => {
-  previewImage.src = imagePath;
+  //previewImage.src = imagePath;
+  previewImage.src = `${imagePath}?t=${Date.now()}`;
   previewImage.style.display = "block";
 });
 
