@@ -62,19 +62,17 @@ class Polygon(Item):
 
 
 class Line(Item):
-    line_colors = {}
 
     def __init__(self, resources_dir: str, type: ItemType, line_width: float = 0.0,
                  style: ItemStyle = ItemStyle.ColorFill, zorder: int = 10):
         super().__init__(resources_dir, type, ItemCategory.Line, style, zorder)
-        if not self.__class__.line_colors:
-            colors = ColorManager(resources_dir)
-            self.__class__.line_colors = {
-                ItemType.WaterPath: colors.get_color("water_blue"),
-                ItemType.CartpathTrace: colors.get_color("cartpath_grey"),
-                ItemType.CartpathPath: colors.get_color("cartpath_grey"),
-            }
-        self.color = self.__class__.line_colors[type]
+        colors = ColorManager(resources_dir)
+        line_colors = {
+            ItemType.WaterPath: colors.get_color("water_blue"),
+            ItemType.CartpathTrace: colors.get_color("cartpath_grey"),
+            ItemType.CartpathPath: colors.get_color("cartpath_grey"),
+        }
+        self.color = line_colors[type]
         self.line_width = line_width
 
 
