@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
-const isDev = require("electron-is-dev");
+// const isDev = require("electron-is-dev");
 const fs = require("fs");
 
 let mainWindow;
@@ -20,9 +20,9 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
 
   // 添加这行，自动打开开发者工具
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  //   if (isDev) {
+  //     mainWindow.webContents.openDevTools();
+  //   }
 }
 
 app.whenReady().then(async () => {
