@@ -1,31 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Hole Skin Changer</title>
-    <link rel="stylesheet" href="styles/index.css">
-</head>
-<h1>Hole Skin Changer</h1>
-<body>
+    <link rel="stylesheet" href="styles/index.css" />
+  </head>
+  <h1>Hole Skin Changer</h1>
+  <body>
     <div class="container">
-        <ul class="no-bullets">
-            <li>
-                <div class="drop-zone" id="dropZone1">
-                    Please select the input data directory
-                </div>
-            </li>
-            <li>
-                <div class="drop-zone" id="dropZone2">
-                    Please select the resources directory
-                </div>
-            </li>
-            <li>
-                <div class="drop-zone" id="dropZone3">
-                    Please select the output data directory
-                </div>
-            </li>
-        </ul>
-        <button id="processButton" disabled>Generate</button>
+      <ul class="no-bullets">
+        <li>
+          <div class="drop-zone" id="dropZone1">
+            Please select the input data directory
+          </div>
+        </li>
+        <li>
+          <div class="drop-zone" id="dropZone2">
+            Please select the resources directory
+          </div>
+        </li>
+        <li>
+          <div class="drop-zone" id="dropZone3">
+            Please select the output data directory
+          </div>
+        </li>
+      </ul>
+      <button id="processButton" disabled>Generate</button>
+      <button id="abortButton" disabled>Abort</button>
     </div>
     <script src="js/renderer.js"></script>
-</body>
-</html> 
+  </body>
+</html>
