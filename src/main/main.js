@@ -121,15 +121,29 @@ ipcMain.handle(
         pythonExecutablePath = await getPythonPath();
       }
 
-      currentPythonProcess = spawn(pythonExecutablePath, param); // 保存进程引用
+      currentPythonProcess = spawn(pythonExecutablePath, param);
+
+      let hasShownPreview = false; // 添加标志位
 
       return new Promise((resolve, reject) => {
         let result = "";
         let error = "";
 
         currentPythonProcess.stdout.on("data", (data) => {
-          result += data.toString();
-          console.log("Python output:", data.toString());
+          const output = data.toString();
+          result += output;
+          console.log("Python output:", output);
+
+          // 只有还没展示过预览图时才处理
+          if (!hasShownPreview && output.includes("Generated image:")) {
+            try {
+              const imagePath = output.split("Generated image:")[1].trim();
+              mainWindow.webContents.send("update-preview", imagePath);
+              hasShownPreview = true; // 设置标志位
+            } catch (e) {
+              console.error("Error parsing image path:", e);
+            }
+          }
         });
 
         currentPythonProcess.stderr.on("data", (data) => {
@@ -158,17 +172,19 @@ ipcMain.handle(
   }
 );
 
-// 添加新的IPC处理器来处理终止请求
+// 修改abort处理部分
 ipcMain.handle("abort-process", () => {
   if (currentPythonProcess) {
-    // 在Windows上使用taskkill来确保子进程也被终止
+    // 在终止进程前先通知渲染进程清除预览图
+    mainWindow.webContents.send("clear-preview");
+
     if (process.platform === "win32") {
       spawn("taskkill", ["/pid", currentPythonProcess.pid, "/f", "/t"]);
     } else {
       currentPythonProcess.kill("SIGTERM");
     }
     currentPythonProcess = null;
-    return true;
+    throw new Error("Process aborted");
   }
   return false;
 });

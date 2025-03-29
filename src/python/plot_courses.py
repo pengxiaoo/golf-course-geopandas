@@ -258,6 +258,7 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path, reso
             pad_inches=0,
             transparent=True,
         )
+        print(f"Generated image: {output_folder_path}/{club_id}_{course_id}_{hole_number}.png", flush=True)
     except Exception as e:
         logger.error(f"Exception: {e}, {debug_info}")
     finally:

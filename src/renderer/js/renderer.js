@@ -2,6 +2,7 @@ const { ipcRenderer } = require("electron");
 const fileList = document.getElementById("fileList");
 const processButton = document.getElementById("processButton");
 const abortButton = document.getElementById("abortButton");
+const previewImage = document.getElementById("previewImage");
 
 let selectedFiles = [];
 
@@ -31,6 +32,18 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
   });
 });
 
+// 添加IPC监听器来更新预览图
+ipcRenderer.on("update-preview", (event, imagePath) => {
+  previewImage.src = imagePath;
+  previewImage.style.display = "block";
+});
+
+// 添加新的IPC监听器来清除预览图
+ipcRenderer.on("clear-preview", () => {
+  previewImage.style.display = "none";
+  previewImage.src = "";
+});
+
 processButton.addEventListener("click", async () => {
   if (!input_data_dir || !resources_dir || !output_data_dir) {
     console.log("Please select all three folders before proceeding.");
@@ -49,14 +62,21 @@ processButton.addEventListener("click", async () => {
     processButton.textContent = "Processing...";
     abortButton.disabled = false;
 
+    // 清除之前的预览图
+    previewImage.style.display = "none";
+    previewImage.src = "";
+
     const results = await ipcRenderer.invoke(
       "change-skin",
       input_data_dir,
       resources_dir,
       output_data_dir
     );
-    console.log("check: ", results);
 
+    // 如果进程被中止，直接返回，不处理结果
+    if (!results) return;
+
+    console.log("check: ", results);
     const jsonObj = JSON.parse(results);
 
     fileList.innerHTML = "";
@@ -72,11 +92,14 @@ processButton.addEventListener("click", async () => {
       fileList.appendChild(item);
     });
   } catch (error) {
-    console.error("renderer.js: Error:", error);
-    const errorDiv = document.createElement("div");
-    errorDiv.textContent = `Error generating: ${error}`;
-    errorDiv.className = "error";
-    fileList.appendChild(errorDiv);
+    // 只有在非中止情况下才显示错误信息
+    if (!error.message?.includes("aborted")) {
+      console.error("Error:", error);
+      const errorDiv = document.createElement("div");
+      errorDiv.textContent = "An error occurred during processing";
+      errorDiv.className = "error";
+      fileList.appendChild(errorDiv);
+    }
   } finally {
     processButton.disabled = false;
     processButton.textContent = "Generate";
@@ -84,14 +107,24 @@ processButton.addEventListener("click", async () => {
   }
 });
 
+// 修改abort按钮的事件监听器，移除重复的预览图清除代码
 abortButton.addEventListener("click", async () => {
   try {
     await ipcRenderer.invoke("abort-process");
-    const errorDiv = document.createElement("div");
-    errorDiv.textContent = "Process aborted by user";
-    errorDiv.className = "warning";
-    fileList.appendChild(errorDiv);
+
+    // 只显示简单的中止信息
+    const messageDiv = document.createElement("div");
+    messageDiv.textContent = "Process aborted";
+    messageDiv.className = "warning";
+    fileList.innerHTML = ""; // 清除之前的所有消息
+    fileList.appendChild(messageDiv);
+
+    // 重置按钮状态
+    processButton.disabled = false;
+    processButton.textContent = "Generate";
+    abortButton.disabled = true;
   } catch (error) {
-    console.error("Error aborting process:", error);
+    // 不显示具体错误信息
+    console.error("Error aborting process");
   }
 });

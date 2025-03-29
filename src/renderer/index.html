@@ -24,8 +24,18 @@
           </div>
         </li>
       </ul>
-      <button id="processButton" disabled>Generate</button>
-      <button id="abortButton" disabled>Abort</button>
+      <div class="buttons-container">
+        <button id="processButton" disabled>Generate</button>
+        <button id="abortButton" disabled>Abort</button>
+      </div>
+
+      <!-- 预览区域 -->
+      <div id="previewContainer" class="preview-container">
+        <img id="previewImage" class="preview-image" style="display: none" />
+      </div>
+
+      <!-- 文件列表 -->
+      <div id="fileList"></div>
     </div>
     <script src="js/renderer.js"></script>
   </body>

@@ -15,3 +15,22 @@
 #abortButton:disabled {
   background-color: #dc354580;
 }
+
+.preview-container {
+  margin-top: 20px;
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.preview-image {
+  max-width: 80%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
