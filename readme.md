@@ -18,14 +18,6 @@ including green, fairway, tee, bunker, water, and hole boundary. The output is a
 - `resources/textures/`: stores the textures used to represent the polygons
 - `resources/colors.xml`: stores the colors used to represent the lines
 
-## Set up Python Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
 ## How to setup and run
 
 ### Install nvm, node, npm, etc
@@ -73,17 +65,15 @@ env activate
 # poetry add numpy scipy
 ```
 
-### Test python code
+### Test python code(bug to fix)
 
 - run the python test cases
 
 ```bash
-poetry run pytest src/python/test.py -v
+poetry run pytest src/python/plot_courses.py -v # ModuleNotFoundError: No module named 'hole_item'
 ```
 
-- the test cases will load files from /src/python/testcases/input/ and save the processed files to /src/python/testcases/output/
-
-### Test frontend code(bug to fix)
+### Test frontend code
 
 - run the frontend code
 

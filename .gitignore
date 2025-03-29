@@ -14,6 +14,7 @@ src/python/testcases/output/*
 
 # Keep test input files
 !src/python/testcases/input/*
+src/python/__pycache__/*
 node_modules/*
 *.lock
 *.log
