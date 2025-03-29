@@ -35,36 +35,20 @@ ipcRenderer.on("update-preview", (event, imagePath) => {
   previewImage.style.display = "block";
 });
 
-// 添加新的IPC监听器来清除预览图
-ipcRenderer.on("clear-preview", () => {
-  previewImage.style.display = "none";
-  previewImage.src = "";
-});
-
 processButton.addEventListener("click", async () => {
   if (!root_data_dir) {
     console.log("Please select the root directory before proceeding.");
     return;
   }
 
-  console.log(
-    "Processing with folders:",
-    root_data_dir
-  );
+  console.log("Processing with folders:", root_data_dir);
 
   try {
     processButton.disabled = true;
     processButton.textContent = "Processing...";
     abortButton.disabled = false;
 
-    // 清除之前的预览图
-    previewImage.style.display = "none";
-    previewImage.src = "";
-
-    const results = await ipcRenderer.invoke(
-      "change-skin",
-      root_data_dir
-    );
+    const results = await ipcRenderer.invoke("change-skin", root_data_dir);
 
     // 如果进程被中止，直接返回，不处理结果
     if (!results) return;
@@ -85,13 +69,22 @@ processButton.addEventListener("click", async () => {
       fileList.appendChild(item);
     });
   } catch (error) {
+    // 添加详细的错误日志
+    console.log("Caught error in process button handler:", {
+      errorMessage: error.message,
+      errorStack: error.stack,
+      isAbortError: error.message?.includes("aborted"),
+    });
+
     // 只有在非中止情况下才显示错误信息
     if (!error.message?.includes("aborted")) {
-      console.error("Error:", error);
+      console.error("Showing error message for non-abort error");
       const errorDiv = document.createElement("div");
       errorDiv.textContent = "An error occurred during processing";
       errorDiv.className = "error";
       fileList.appendChild(errorDiv);
+    } else {
+      console.log("Skipping error message for abort error");
     }
   } finally {
     processButton.disabled = false;
@@ -100,10 +93,12 @@ processButton.addEventListener("click", async () => {
   }
 });
 
-// 修改abort按钮的事件监听器，移除重复的预览图清除代码
+// 修改abort按钮的事件监听器
 abortButton.addEventListener("click", async () => {
+  console.log("Abort button clicked");
   try {
     await ipcRenderer.invoke("abort-process");
+    console.log("Abort process completed");
 
     // 只显示简单的中止信息
     const messageDiv = document.createElement("div");
@@ -117,7 +112,14 @@ abortButton.addEventListener("click", async () => {
     processButton.textContent = "Generate";
     abortButton.disabled = true;
   } catch (error) {
-    // 不显示具体错误信息
+    // 添加详细的错误日志
+    console.log("Error in abort button handler:", {
+      errorMessage: error.message,
+      errorStack: error.stack,
+    });
     console.error("Error aborting process");
   }
 });
+
+// 移除clear-preview的监听器，因为我们不再需要它
+ipcRenderer.removeAllListeners("clear-preview");

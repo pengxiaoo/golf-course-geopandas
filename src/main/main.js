@@ -88,88 +88,75 @@ ipcMain.handle("open-folder-dialog", async () => {
   return result.canceled ? null : result.filePaths[0];
 });
 
-ipcMain.handle(
-  "change-skin",
-  async (event, root_data_dir) => {
-    try {
-      let pythonExecutablePath = "";
-      let param;
-      let basePath;
+ipcMain.handle("change-skin", async (event, root_data_dir) => {
+  try {
+    let pythonExecutablePath = "";
+    let param;
+    let basePath;
 
-      if (app.isPackaged) {
-        basePath = process.resourcesPath;
-        param = [
-          "--root-data-dir",
-          root_data_dir,
-        ];
-        pythonExecutablePath = path.join(basePath, "python", "plot_courses");
-      } else {
-        basePath = path.join(__dirname, "../python/plot_courses.py");
-        param = [
-          basePath,
-          "--root-data-dir",
-          root_data_dir,
-        ];
-        pythonExecutablePath = await getPythonPath();
-      }
-
-      currentPythonProcess = spawn(pythonExecutablePath, param);
-
-      let hasShownPreview = false; // 添加标志位
-
-      return new Promise((resolve, reject) => {
-        let result = "";
-        let error = "";
-
-        currentPythonProcess.stdout.on("data", (data) => {
-          const output = data.toString();
-          result += output;
-          console.log("Python output:", output);
-
-          // 只有还没展示过预览图时才处理
-          if (!hasShownPreview && output.includes("Generated image:")) {
-            try {
-              const imagePath = output.split("Generated image:")[1].trim();
-              mainWindow.webContents.send("update-preview", imagePath);
-              hasShownPreview = true; // 设置标志位
-            } catch (e) {
-              console.error("Error parsing image path:", e);
-            }
-          }
-        });
-
-        currentPythonProcess.stderr.on("data", (data) => {
-          error += data.toString();
-          console.error("Python error:", data.toString());
-        });
-
-        currentPythonProcess.on("close", (code) => {
-          currentPythonProcess = null; // 清除进程引用
-          console.log("Python process exited with code:", code);
-          if (code !== 0) {
-            reject(error || "Process failed");
-          } else {
-            try {
-              resolve(result);
-            } catch (e) {
-              reject(`Failed to parse result: ${result}`);
-            }
-          }
-        });
-      });
-    } catch (error) {
-      console.error("Error processing files:", error);
-      throw error;
+    if (app.isPackaged) {
+      basePath = process.resourcesPath;
+      param = ["--root-data-dir", root_data_dir];
+      pythonExecutablePath = path.join(basePath, "python", "plot_courses");
+    } else {
+      basePath = path.join(__dirname, "../python/plot_courses.py");
+      param = [basePath, "--root-data-dir", root_data_dir];
+      pythonExecutablePath = await getPythonPath();
     }
+
+    currentPythonProcess = spawn(pythonExecutablePath, param);
+
+    let hasShownPreview = false; // 添加标志位
+
+    return new Promise((resolve, reject) => {
+      let result = "";
+      let error = "";
+
+      currentPythonProcess.stdout.on("data", (data) => {
+        const output = data.toString();
+        result += output;
+        console.log("Python output:", output);
+
+        // 只有还没展示过预览图时才处理
+        if (!hasShownPreview && output.includes("Generated image:")) {
+          try {
+            const imagePath = output.split("Generated image:")[1].trim();
+            mainWindow.webContents.send("update-preview", imagePath);
+            hasShownPreview = true; // 设置标志位
+          } catch (e) {
+            console.error("Error parsing image path:", e);
+          }
+        }
+      });
+
+      currentPythonProcess.stderr.on("data", (data) => {
+        error += data.toString();
+        console.error("Python error:", data.toString());
+      });
+
+      currentPythonProcess.on("close", (code) => {
+        currentPythonProcess = null; // 清除进程引用
+        console.log("Python process exited with code:", code);
+        if (code !== 0) {
+          reject(error || "Process failed");
+        } else {
+          try {
+            resolve(result);
+          } catch (e) {
+            reject(`Failed to parse result: ${result}`);
+          }
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error processing files:", error);
+    throw error;
   }
-);
+});
 
 // 修改abort处理部分
 ipcMain.handle("abort-process", () => {
   if (currentPythonProcess) {
-    // 在终止进程前先通知渲染进程清除预览图
-    mainWindow.webContents.send("clear-preview");
-
     if (process.platform === "win32") {
       spawn("taskkill", ["/pid", currentPythonProcess.pid, "/f", "/t"]);
     } else {
