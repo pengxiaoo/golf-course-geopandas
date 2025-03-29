@@ -98,5 +98,5 @@ one example of the output course map is shown below:
 ### Package
 
 ```bash
-npm run build
+sh build_all.sh
 ```

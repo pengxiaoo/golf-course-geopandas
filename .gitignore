@@ -26,3 +26,9 @@ dist/*
 ~/*
 /**/dist/*
 /**/build/*
+
+# PyInstaller
+*.spec
+build/
+dist/
+__pycache__/

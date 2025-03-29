@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
+const isDev = require("electron-is-dev");
+const fs = require("fs");
 
 let mainWindow;
 let currentPythonProcess = null; // 添加这行来跟踪当前的Python进程
@@ -18,7 +20,9 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
 
   // 添加这行，自动打开开发者工具
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 app.whenReady().then(async () => {
@@ -29,6 +33,13 @@ app.whenReady().then(async () => {
   //     .catch((err) => console.log('An error occurred: ', err));
   // }
   createWindow();
+
+  if (app.isPackaged) {
+    console.log(
+      "Resources directory contents:",
+      fs.readdirSync(path.join(process.resourcesPath))
+    );
+  }
 });
 
 app.on("window-all-closed", () => {
@@ -99,8 +110,18 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
 
     if (app.isPackaged) {
       basePath = process.resourcesPath;
-      param = ["--root-data-dir", root_data_dir];
+      // 直接使用打包后的可执行文件
       pythonExecutablePath = path.join(basePath, "python", "plot_courses");
+      param = ["--root-data-dir", root_data_dir];
+
+      // 确保文件有执行权限
+      if (process.platform === "darwin" || process.platform === "linux") {
+        try {
+          fs.chmodSync(pythonExecutablePath, "755");
+        } catch (error) {
+          console.error("Failed to set executable permissions:", error);
+        }
+      }
     } else {
       basePath = path.join(__dirname, "../python/plot_courses.py");
       param = [basePath, "--root-data-dir", root_data_dir];
@@ -134,7 +155,11 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
 
       currentPythonProcess.stderr.on("data", (data) => {
         error += data.toString();
-        console.error("Python error:", data.toString());
+        console.error("Python error details:", {
+          error: data.toString(),
+          pythonPath: pythonExecutablePath,
+          params: param,
+        });
       });
 
       currentPythonProcess.on("close", (code) => {

@@ -1,6 +1,18 @@
+import sys
+import os
 from enum import Enum
-from color_manager import ColorManager
 
+# 添加当前目录到 Python 路径
+if getattr(sys, 'frozen', False):
+    # 如果是打包环境
+    module_dir = sys._MEIPASS
+else:
+    # 如果是开发环境
+    module_dir = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(module_dir)
+
+from color_manager import ColorManager
 
 class ItemCategory(Enum):
     Polygon = "Polygon"

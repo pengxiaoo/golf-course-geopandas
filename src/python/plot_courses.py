@@ -7,10 +7,23 @@ from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from shapely.geometry import Point, LineString, Polygon as ShapelyPolygon
+import numpy as np
+import sys
+
+# 添加当前目录到 Python 路径
+if getattr(sys, 'frozen', False):
+    # 如果是打包环境
+    module_dir = sys._MEIPASS
+else:
+    # 如果是开发环境
+    module_dir = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(module_dir)
+
+# 现在可以导入本地模块
 from hole_item import Item, ItemType, Polygon, Line, Marker
 from utils import logger
 import utils
-import numpy as np
 
 
 class Resources:
