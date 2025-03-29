@@ -1,7 +1,7 @@
 {
   "name": "hole_skin_changer",
   "version": "1.0.0",
-  "description": "A desktop application for polishing reports",
+  "description": "A desktop application for generating hole skin",
   "main": "src/main/main.js",
   "author": {
     "name": "data-master",
@@ -30,7 +30,7 @@
   },
   "build": {
     "appId": "com.data-master.hole_skin_changer",
-    "productName": "Report Polisher",
+    "productName": "Hole Skin Changer",
     "directories": {
       "output": "dist"
     },
