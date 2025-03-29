@@ -38,9 +38,7 @@ class Resources:
 
 def create_parser():
     parser = argparse.ArgumentParser(description="Hole skin changer")
-    parser.add_argument("--input-data-dir", help="Input data directory")
-    parser.add_argument("--resources-dir", help="resources data directory")
-    parser.add_argument("--output-data-dir", help="Output data directory")
+    parser.add_argument("--root-data-dir", help="Root data directory")
     return parser
 
 
@@ -282,7 +280,9 @@ def plot_courses(input_jsonl_file_path, resources_dir, output_folder_path):
 if __name__ == "__main__":
     parser = create_parser()
     args, _ = parser.parse_known_args()
-    input_path = os.path.join(args.input_data_dir, "golf_course_layout_samples.jsonl")
-    output_path = args.output_data_dir
+    root_data_dir = args.root_data_dir
+    input_path = os.path.join(args.root_data_dir, "input_data", "golf_course_layout_samples.jsonl")
+    output_path = os.path.join(args.root_data_dir, "output_data")
+    resources_dir = os.path.join(args.root_data_dir, "resources")
     os.makedirs(output_path, exist_ok=True)
-    plot_courses(input_path, args.resources_dir, output_path)
+    plot_courses(input_path, resources_dir, output_path)
