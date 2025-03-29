@@ -3,16 +3,11 @@ import os
 import sys
 
 class ColorManager:
-    _instance = None
-    _colors = {}
-    _resources_dir = None
 
-    def __new__(cls, resources_dir=None):
-        if cls._instance is None:
-            cls._instance = super(ColorManager, cls).__new__(cls)
-            cls._instance._resources_dir = resources_dir
-            cls._instance._load_colors()
-        return cls._instance
+    def __init__(self, resources_dir=None):
+        self._resources_dir = resources_dir
+        self._colors = {}
+        self._load_colors()
 
     def _load_colors(self):
         # 如果提供了 resources_dir，使用它
