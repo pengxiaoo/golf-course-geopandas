@@ -106,46 +106,41 @@ def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary):
 
 
 def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
-    try:
-        texture_img = plt.imread(item.texture)
-        bounds = geo_series.total_bounds
-        width = bounds[2] - bounds[0]
-        height = bounds[3] - bounds[1]
-        # 创建平铺纹理
-        # 设置纹理基础大小（在经纬度坐标系中）
-        base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
-        # 计算需要多少个纹理来覆盖整个区域
-        nx = int(np.ceil(width / base_size))
-        ny = int(np.ceil(height / base_size))
-        # 创建裁剪路径
-        polygon = geo_series.iloc[0]
-        coords = polygon.exterior.coords
-        path = Path(coords)
-        patch = PathPatch(path, facecolor='none', edgecolor='none')
-        ax.add_patch(patch)
-        # 为每个网格创建纹理
-        for i in range(nx):
-            for j in range(ny):
-                x = bounds[0] + i * base_size
-                y = bounds[1] + j * base_size
-                ax.imshow(texture_img,
-                    extent=[x, x + base_size, y, y + base_size],
-                    alpha=0.7,
-                    zorder=item.zorder,
-                    aspect='auto',
-                    interpolation='bilinear',
-                    clip_path=patch)
-        # 绘制多边形边界
-        geo_series.plot(
-            ax=ax,
-            facecolor='none',
-            zorder=item.zorder,
-            linewidth=0,
-        )
-    except Exception as e:
-        logger.error(f"Error in texture plotting: {str(e)}")
-        logger.error(f"Error details: {e.__class__.__name__}")
-
+    texture_img = plt.imread(item.texture)
+    bounds = geo_series.total_bounds
+    width = bounds[2] - bounds[0]
+    height = bounds[3] - bounds[1]
+    # 创建平铺纹理
+    # 设置纹理基础大小（在经纬度坐标系中）
+    base_size = min(width, height) * 0.1  # 纹理基础大小为区域最小边长的10%
+    # 计算需要多少个纹理来覆盖整个区域
+    nx = int(np.ceil(width / base_size))
+    ny = int(np.ceil(height / base_size))
+    # 创建裁剪路径
+    polygon = geo_series.iloc[0]
+    coords = polygon.exterior.coords
+    path = Path(coords)
+    patch = PathPatch(path, facecolor='none', edgecolor='none')
+    ax.add_patch(patch)
+    # 为每个网格创建纹理
+    for i in range(nx):
+        for j in range(ny):
+            x = bounds[0] + i * base_size
+            y = bounds[1] + j * base_size
+            ax.imshow(texture_img,
+                extent=[x, x + base_size, y, y + base_size],
+                alpha=0.7,
+                zorder=item.zorder,
+                aspect='auto',
+                interpolation='bilinear',
+                clip_path=patch)
+    # 绘制多边形边界
+    geo_series.plot(
+        ax=ax,
+        facecolor='none',
+        zorder=item.zorder,
+        linewidth=0,
+    )
 
 def plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
@@ -234,8 +229,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path, reso
         )
 
         # plot hole boundary
-        hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-        plot_polygon(ax, hole_boundary_gdf, resources.holeBoundary)
+        hole_boundary_trace = gpd.GeoSeries([hole_boundary])
+        plot_polygon(ax, hole_boundary_trace, resources.holeBoundary)
         # plot items inside hole boundary
         for _, row in gdf.iterrows():
             item = get_item_by_type(row["itemType"].value, resources)
@@ -272,7 +267,6 @@ def plot_courses(input_jsonl_file_path, resources_dir, output_folder_path):
             course_id = data["courseId"]
             holes = data["holes"]
             hole_count = len(holes)
-            # todo: for now only plot the first hole. update this later.
             for hole_number in range(1, hole_count + 1):
                 plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources)
 

@@ -14,7 +14,7 @@ logging.basicConfig(
         logging.StreamHandler(),
     ],
 )
-logger.warning(f"root_dir: {root_dir}")
+logger.info(f"root_dir: {root_dir}")
 smooth_sigma = 1
 dpi = 300
 meters_per_pixel = 0.2

@@ -69,16 +69,21 @@ processButton.addEventListener("click", async () => {
       fileList.appendChild(item);
     });
   } catch (error) {
-    console.log("Caught error:", error);
+    // 添加更详细的错误日志
+    console.log("Detailed error information:", {
+      message: error.message,
+      stack: error.stack,
+      fullError: error,
+      type: error.constructor.name,
+    });
 
     // 检查是否是abort相关的错误
     const isAbortError =
       error.message?.includes("aborted") ||
-      error.message?.includes("abort-process");
+      error.message?.includes("change-skin");
 
     if (!isAbortError) {
-      // 只有在非abort错误时才显示错误信息
-      console.error("Non-abort error occurred:", error);
+      console.error("Non-abort error details:", error.message);
       const errorDiv = document.createElement("div");
       errorDiv.textContent = "An error occurred during processing";
       errorDiv.className = "error";
