@@ -34,12 +34,10 @@
     "directories": {
       "output": "dist"
     },
-    "asarUnpack": [
-      "python/**/*"
-    ],
     "files": [
       "src/**/*",
-      "package.json"
+      "package.json",
+      "!**/*.pyc"
     ],
     "mac": {
       "category": "public.app-category.productivity"
@@ -52,10 +50,13 @@
     },
     "extraResources": [
       {
-        "from": "src/python",
-        "to": "python",
-        "filter": ["**/*"]
+        "from": "src/python/dist/plot_courses",
+        "to": "python/plot_courses"
+      },
+      {
+        "from": "resources",
+        "to": "resources"
       }
     ]
   }
-} 
+}
