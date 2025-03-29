@@ -16,6 +16,9 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+
+  // 添加这行，自动打开开发者工具
+  mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(async () => {

@@ -79,7 +79,7 @@ def get_item_by_type(item_type: ItemType, resources: Resources):
 def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary):
     if coords is None or len(coords) == 0:
         return
-    logger.warning(f"Plotting marker: {marker.type} with style: {marker.style}, marker_pixels: {marker_pixels}")
+    logger.info(f"Plotting marker: {marker.type} with style: {marker.style}, marker_pixels: {marker_pixels}")
     x, y = [], []
     for coord in coords:
         coord_obj = Point(coord)

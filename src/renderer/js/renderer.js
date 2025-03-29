@@ -69,22 +69,22 @@ processButton.addEventListener("click", async () => {
       fileList.appendChild(item);
     });
   } catch (error) {
-    // 添加详细的错误日志
-    console.log("Caught error in process button handler:", {
-      errorMessage: error.message,
-      errorStack: error.stack,
-      isAbortError: error.message?.includes("aborted"),
-    });
+    console.log("Caught error:", error);
 
-    // 只有在非中止情况下才显示错误信息
-    if (!error.message?.includes("aborted")) {
-      console.error("Showing error message for non-abort error");
+    // 检查是否是abort相关的错误
+    const isAbortError =
+      error.message?.includes("aborted") ||
+      error.message?.includes("abort-process");
+
+    if (!isAbortError) {
+      // 只有在非abort错误时才显示错误信息
+      console.error("Non-abort error occurred:", error);
       const errorDiv = document.createElement("div");
       errorDiv.textContent = "An error occurred during processing";
       errorDiv.className = "error";
       fileList.appendChild(errorDiv);
     } else {
-      console.log("Skipping error message for abort error");
+      console.log("Abort error caught, skipping error message");
     }
   } finally {
     processButton.disabled = false;
