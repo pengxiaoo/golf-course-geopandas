@@ -1,3 +1,4 @@
+import argparse
 import os
 import json
 import geopandas as gpd
@@ -11,54 +12,67 @@ from utils import logger
 import utils
 import numpy as np
 
-# polygons
-teeboxTrace = Polygon(ItemType.TeeboxTrace, zorder=9)
-fairwayTrace = Polygon(ItemType.FairwayTrace, zorder=2)
-greenTrace = Polygon(ItemType.GreenTrace, zorder=9)
-bunkerTrace = Polygon(ItemType.BunkerTrace, zorder=1)
-vegetationTrace = Polygon(ItemType.VegetationTrace, zorder=1)
-waterTrace = Polygon(ItemType.WaterTrace, zorder=1)
-holeBoundary = Polygon(ItemType.HoleBoundary, zorder=0)
-# lines
-waterPath = Line(ItemType.WaterPath, line_width=1.0)
-cartpathTrace = Line(ItemType.CartpathTrace, line_width=0.5, zorder=11)
-cartpathPath = Line(ItemType.CartpathPath, line_width=0.5, zorder=12)
-# markers
-leafyTree = Marker(ItemType.LeafyTree)
-shrubTree = Marker(ItemType.ShrubTree)
-palmTree = Marker(ItemType.PalmTree)
-pineTree = Marker(ItemType.PineTree)
+
+class Resources:
+    def __init__(self, resources_dir):
+        # polygons
+        self.teeboxTrace = Polygon(resources_dir, ItemType.TeeboxTrace, zorder=9)
+        self.fairwayTrace = Polygon(resources_dir, ItemType.FairwayTrace, zorder=2)
+        self.greenTrace = Polygon(resources_dir, ItemType.GreenTrace, zorder=9)
+        self.bunkerTrace = Polygon(resources_dir, ItemType.BunkerTrace, zorder=1)
+        self.vegetationTrace = Polygon(resources_dir, ItemType.VegetationTrace, zorder=1)
+        self.waterTrace = Polygon(resources_dir, ItemType.WaterTrace, zorder=1)
+        self.holeBoundary = Polygon(resources_dir, ItemType.HoleBoundary, zorder=0)
+
+        # lines
+        self.waterPath = Line(resources_dir, ItemType.WaterPath, line_width=1.0)
+        self.cartpathTrace = Line(resources_dir, ItemType.CartpathTrace, line_width=0.5, zorder=11)
+        self.cartpathPath = Line(resources_dir, ItemType.CartpathPath, line_width=0.5, zorder=12)
+
+        # markers
+        self.leafyTree = Marker(resources_dir, ItemType.LeafyTree)
+        self.shrubTree = Marker(resources_dir, ItemType.ShrubTree)
+        self.palmTree = Marker(resources_dir, ItemType.PalmTree)
+        self.pineTree = Marker(resources_dir, ItemType.PineTree)
 
 
-def get_item_by_type(item_type: ItemType):
+def create_parser():
+    parser = argparse.ArgumentParser(description="Hole skin changer")
+    parser.add_argument("--input-data-dir", help="Input data directory")
+    parser.add_argument("--resources-dir", help="resources data directory")
+    parser.add_argument("--output-data-dir", help="Output data directory")
+    return parser
+
+
+def get_item_by_type(item_type: ItemType, resources: Resources):
     if item_type == ItemType.TeeboxTrace.value:
-        return teeboxTrace
+        return resources.teeboxTrace
     elif item_type == ItemType.FairwayTrace.value:
-        return fairwayTrace
+        return resources.fairwayTrace
     elif item_type == ItemType.GreenTrace.value:
-        return greenTrace
+        return resources.greenTrace
     elif item_type == ItemType.BunkerTrace.value:
-        return bunkerTrace
+        return resources.bunkerTrace
     elif item_type == ItemType.VegetationTrace.value:
-        return vegetationTrace
+        return resources.vegetationTrace
     elif item_type == ItemType.WaterTrace.value:
-        return waterTrace
+        return resources.waterTrace
     elif item_type == ItemType.HoleBoundary.value:
-        return holeBoundary
+        return resources.holeBoundary
     elif item_type == ItemType.WaterPath.value:
-        return waterPath
+        return resources.waterPath
     elif item_type == ItemType.CartpathTrace.value:
-        return cartpathTrace
+        return resources.cartpathTrace
     elif item_type == ItemType.CartpathPath.value:
-        return cartpathPath
+        return resources.cartpathPath
     elif item_type == ItemType.LeafyTree.value:
-        return leafyTree
+        return resources.leafyTree
     elif item_type == ItemType.ShrubTree.value:
-        return shrubTree
+        return resources.shrubTree
     elif item_type == ItemType.PalmTree.value:
-        return palmTree
+        return resources.palmTree
     elif item_type == ItemType.PineTree.value:
-        return pineTree
+        return resources.pineTree
     else:
         logger.warning(f"Unknown item type: {item_type}")
         return None
@@ -135,7 +149,7 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
         logger.error(f"Error details: {e.__class__.__name__}")
 
 
-def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
+def plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
     hole = holes[hole_number - 1]
     hole_boundary = None
@@ -145,8 +159,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
     # record the hole boundary first
     for gpsItem in hole["gpsItems"]:
         item_type = gpsItem["itemType"]
-        item = get_item_by_type(item_type)
-        if item == holeBoundary:
+        item = get_item_by_type(item_type, resources)
+        if item == resources.holeBoundary:
             coords = [
                 (point["longitude"], point["latitude"]) for point in gpsItem["shape"]
             ]
@@ -154,14 +168,14 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
             if hole_boundary:
                 geometries.append(hole_boundary)
                 attributes.append(
-                    {"itemType": holeBoundary.type}
+                    {"itemType": resources.holeBoundary.type}
                 )
             break
     # record the rest of the items, other than hole boundary
     for gpsItem in hole["gpsItems"]:
         item_type = gpsItem["itemType"]
-        item = get_item_by_type(item_type)
-        if item == holeBoundary:
+        item = get_item_by_type(item_type, resources)
+        if item == resources.holeBoundary:
             continue
         coords = [(point["longitude"], point["latitude"]) for point in gpsItem["shape"]]
         if len(coords) == 0:
@@ -223,10 +237,10 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
 
         # plot hole boundary
         hole_boundary_gdf = gpd.GeoDataFrame(geometry=[hole_boundary], crs=gdf.crs)
-        plot_polygon(ax, hole_boundary_gdf, holeBoundary)
+        plot_polygon(ax, hole_boundary_gdf, resources.holeBoundary)
         # plot items inside hole boundary
         for _, row in gdf.iterrows():
-            item = get_item_by_type(row["itemType"].value)
+            item = get_item_by_type(row["itemType"].value, resources)
             if isinstance(row.geometry, LineString):
                 x, y = row.geometry.xy
                 ax.plot(x, y, color=row["color"], linewidth=row["lineWidth"], zorder=item.zorder)
@@ -250,7 +264,8 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path):
         plt.close("all")
 
 
-def plot_courses(input_jsonl_file_path, output_folder_path):
+def plot_courses(input_jsonl_file_path, resources_dir, output_folder_path):
+    resources = Resources(resources_dir)
     with open(input_jsonl_file_path, "r", newline="", encoding="utf-8") as file:
         for line in file:
             data = json.loads(line)
@@ -260,14 +275,13 @@ def plot_courses(input_jsonl_file_path, output_folder_path):
             hole_count = len(holes)
             # todo: for now only plot the first hole. update this later.
             for hole_number in range(1, hole_count + 1):
-                plot_course(club_id, course_id, hole_number, holes, output_folder_path)
+                plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources)
 
 
 if __name__ == "__main__":
-    input_path = os.path.join(
-        utils.root_dir, "input_data", "golf_course_layout_samples.jsonl"
-    )
-    output_path = os.path.join(utils.root_dir, "output_data")
-    os.makedirs(os.path.dirname(input_path), exist_ok=True)
+    parser = create_parser()
+    args, _ = parser.parse_known_args()
+    input_path = os.path.join(args.input_data_dir, "golf_course_layout_samples.jsonl")
+    output_path = args.output_data_dir
     os.makedirs(output_path, exist_ok=True)
-    plot_courses(input_path, output_path)
+    plot_courses(input_path, args.resources_dir, output_path)

@@ -10,7 +10,7 @@ logging.basicConfig(
     level=logging.WARNING,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(f"{root_dir}/input_data/golf_course_plotting.log"),
+        logging.FileHandler(f"{root_dir}/golf_course_plotting.log"),
         logging.StreamHandler(),
     ],
 )
