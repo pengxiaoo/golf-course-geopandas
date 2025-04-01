@@ -2,9 +2,10 @@ const { ipcRenderer } = require("electron");
 const fileList = document.getElementById("fileList");
 const processButton = document.getElementById("processButton");
 const abortButton = document.getElementById("abortButton");
-const previewImage = document.getElementById("previewImage");
+const previewGrid = document.getElementById("previewGrid");
 
 let root_data_dir = null;
+let previewCount = 0;
 
 document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
   dropZone.addEventListener("click", async () => {
@@ -29,11 +30,20 @@ document.querySelectorAll(".drop-zone").forEach((dropZone, index) => {
   });
 });
 
-// 添加IPC监听器来更新预览图
+// 修改IPC监听器来更新预览图
 ipcRenderer.on("update-preview", (event, imagePath) => {
-  //previewImage.src = imagePath;
-  previewImage.src = `${imagePath}?t=${Date.now()}`;
-  previewImage.style.display = "block";
+  if (previewCount >= 5) return; // 最多显示5张图片
+
+  const previewItem = document.createElement("div");
+  previewItem.className = `preview-item ${previewCount === 0 ? "large" : ""}`;
+
+  const img = document.createElement("img");
+  img.className = `preview-image ${previewCount === 0 ? "large" : ""}`;
+  img.src = `${imagePath}?t=${Date.now()}`;
+
+  previewItem.appendChild(img);
+  previewGrid.appendChild(previewItem);
+  previewCount++;
 });
 
 processButton.addEventListener("click", async () => {
@@ -41,6 +51,10 @@ processButton.addEventListener("click", async () => {
     console.log("Please select the root directory before proceeding.");
     return;
   }
+
+  // 清空预览区域
+  previewGrid.innerHTML = "";
+  previewCount = 0;
 
   console.log("Processing with folders:", root_data_dir);
 
@@ -81,7 +95,7 @@ processButton.addEventListener("click", async () => {
     // 检查是否是abort相关的错误
     const isAbortError =
       error.message?.includes("aborted") ||
-      error.message?.includes("change-skin");
+      error.message?.includes("Unexpected token");
 
     if (!isAbortError) {
       console.error("Non-abort error details:", error.message);

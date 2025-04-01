@@ -27,7 +27,34 @@ import utils
 
 
 class Resources:
+    _instance = None
+    _resources_cache = {}
+    _image_cache = {}
+
+    def __new__(cls, resources_dir):
+        if cls._instance is None:
+            cls._instance = super(Resources, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, resources_dir):
+        if resources_dir in self._resources_cache:
+            cached_resources = self._resources_cache[resources_dir]
+            self.teeboxTrace = cached_resources['teeboxTrace']
+            self.fairwayTrace = cached_resources['fairwayTrace']
+            self.greenTrace = cached_resources['greenTrace']
+            self.bunkerTrace = cached_resources['bunkerTrace']
+            self.vegetationTrace = cached_resources['vegetationTrace']
+            self.waterTrace = cached_resources['waterTrace']
+            self.holeBoundary = cached_resources['holeBoundary']
+            self.waterPath = cached_resources['waterPath']
+            self.cartpathTrace = cached_resources['cartpathTrace']
+            self.cartpathPath = cached_resources['cartpathPath']
+            self.leafyTree = cached_resources['leafyTree']
+            self.shrubTree = cached_resources['shrubTree']
+            self.palmTree = cached_resources['palmTree']
+            self.pineTree = cached_resources['pineTree']
+            return
+
         # polygons
         self.teeboxTrace = Polygon(resources_dir, ItemType.TeeboxTrace, zorder=9)
         self.fairwayTrace = Polygon(resources_dir, ItemType.FairwayTrace, zorder=2)
@@ -47,6 +74,30 @@ class Resources:
         self.shrubTree = Marker(resources_dir, ItemType.ShrubTree)
         self.palmTree = Marker(resources_dir, ItemType.PalmTree)
         self.pineTree = Marker(resources_dir, ItemType.PineTree)
+
+        # Cache the resources
+        self._resources_cache[resources_dir] = {
+            'teeboxTrace': self.teeboxTrace,
+            'fairwayTrace': self.fairwayTrace,
+            'greenTrace': self.greenTrace,
+            'bunkerTrace': self.bunkerTrace,
+            'vegetationTrace': self.vegetationTrace,
+            'waterTrace': self.waterTrace,
+            'holeBoundary': self.holeBoundary,
+            'waterPath': self.waterPath,
+            'cartpathTrace': self.cartpathTrace,
+            'cartpathPath': self.cartpathPath,
+            'leafyTree': self.leafyTree,
+            'shrubTree': self.shrubTree,
+            'palmTree': self.palmTree,
+            'pineTree': self.pineTree
+        }
+
+    @classmethod
+    def get_image(cls, image_path):
+        if image_path not in cls._image_cache:
+            cls._image_cache[image_path] = plt.imread(image_path)
+        return cls._image_cache[image_path]
 
 
 def create_parser():
@@ -100,7 +151,7 @@ def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary):
             x.append(coord[0])
             y.append(coord[1])
     try:
-        icon = plt.imread(marker.img_icon)
+        icon = Resources.get_image(marker.img_icon)
         for i in range(len(x)):
             zoom = marker_pixels / utils.marker_icon_pixels
             imagebox = OffsetImage(icon, zoom=zoom)
@@ -119,7 +170,7 @@ def plot_marker(ax, marker: Marker, marker_pixels, coords, boundary):
 
 
 def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
-    texture_img = plt.imread(item.texture)
+    texture_img = Resources.get_image(item.texture)
     bounds = geo_series.total_bounds
     width = bounds[2] - bounds[0]
     height = bounds[3] - bounds[1]
@@ -155,9 +206,8 @@ def plot_polygon(ax, geo_series: gpd.GeoSeries, item: Item, alpha=1.0):
         linewidth=0,
     )
 
-def plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources):
+def plot_course(club_id, course_id, hole_number, hole, output_folder_path, resources):
     debug_info = f"clubId: {club_id}, courseId: {course_id}, holeNumber: {hole_number}"
-    hole = holes[hole_number - 1]
     hole_boundary = None
     geometries = []
     attributes = []
@@ -271,9 +321,12 @@ def plot_course(club_id, course_id, hole_number, holes, output_folder_path, reso
         plt.close("all")
 
 
+    
 def plot_courses(input_jsonl_file_path, resources_dir, output_folder_path):
     resources = Resources(resources_dir)
     with open(input_jsonl_file_path, "r", newline="", encoding="utf-8") as file:
+        hole_list = []
+        hole_dict = {}
         for line in file:
             data = json.loads(line)
             club_id = data["clubId"]
@@ -281,7 +334,24 @@ def plot_courses(input_jsonl_file_path, resources_dir, output_folder_path):
             holes = data["holes"]
             hole_count = len(holes)
             for hole_number in range(1, hole_count + 1):
-                plot_course(club_id, course_id, hole_number, holes, output_folder_path, resources)
+                hole = holes[hole_number - 1]
+                hole_list.append((club_id, course_id, hole_number, hole))
+                hole_dict[(club_id, course_id, hole_number)] = hole
+        """
+        把下面五个洞依次放到hole_list数组的最前面。
+        75ae94b0-86ac-11e4-8c28-020000005b00_248966d0-86b3-11e4-8f92-020000005b00_9.png 特小球场，有水域，横向, 257 × 139
+        76afd810-86ac-11e4-8c28-020000005b00_062b3e10-86b4-11e4-8f92-020000005b00_7.png 小球场，有水域，横向, 505 × 134
+        77d87990-86ac-11e4-8c28-020000005b00_3533d770-86b5-11e4-8f92-020000005b00_3.png 小球场，有水线，横向, 558 × 225
+        b1c08a80-86ac-11e4-8c28-020000005b00_7e81e060-86de-11e4-8f92-020000005b00_14.png 大球场，有球车线，横向, 1677 × 969
+        77d87990-86ac-11e4-8c28-020000005b00_3533d770-86b5-11e4-8f92-020000005b00_9.png 大球场，有水线水域，竖向, 439 × 727
+        """        
+        hole_list.insert(0, ("77d87990-86ac-11e4-8c28-020000005b00", "3533d770-86b5-11e4-8f92-020000005b00", 9, hole_dict[("77d87990-86ac-11e4-8c28-020000005b00", "3533d770-86b5-11e4-8f92-020000005b00", 9)]))
+        hole_list.insert(0, ("b1c08a80-86ac-11e4-8c28-020000005b00", "7e81e060-86de-11e4-8f92-020000005b00", 14, hole_dict[("b1c08a80-86ac-11e4-8c28-020000005b00", "7e81e060-86de-11e4-8f92-020000005b00", 14)]))
+        hole_list.insert(0, ("77d87990-86ac-11e4-8c28-020000005b00", "3533d770-86b5-11e4-8f92-020000005b00", 3, hole_dict[("77d87990-86ac-11e4-8c28-020000005b00", "3533d770-86b5-11e4-8f92-020000005b00", 3)]))
+        hole_list.insert(0, ("76afd810-86ac-11e4-8c28-020000005b00", "062b3e10-86b4-11e4-8f92-020000005b00", 7, hole_dict[("76afd810-86ac-11e4-8c28-020000005b00", "062b3e10-86b4-11e4-8f92-020000005b00", 7)]))
+        hole_list.insert(0, ("75ae94b0-86ac-11e4-8c28-020000005b00", "248966d0-86b3-11e4-8f92-020000005b00", 9, hole_dict[("75ae94b0-86ac-11e4-8c28-020000005b00", "248966d0-86b3-11e4-8f92-020000005b00", 9)]))    
+        for club_id, course_id, hole_number, hole in hole_list:
+            plot_course(club_id, course_id, hole_number, hole, output_folder_path, resources)
 
 
 if __name__ == "__main__":

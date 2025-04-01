@@ -51,10 +51,6 @@ npm update
 # step 1: install poetry
 curl -sSL https://install.python-poetry.org | python3 -
 
-# step 1(alternative if use .venv)
-source .venv/bin/activate
-pip install poetry
-
 # step 2: install dependencies
 poetry install --no-root
 
@@ -81,9 +77,15 @@ poetry run pytest src/python/plot_courses.py -v # ModuleNotFoundError: No module
 npm start
 ```
 
+### Package
+
+```bash
+sh build_all.sh
+```
+
 ## UI and outputs
 
-### the designer just need to specify the following paths:
+### the designer just need to specify root path which contains the following subfolders:
 
 - input_data/
 - output_data/
@@ -94,9 +96,3 @@ npm start
 one example of the output course map is shown below:
 
 ![example course map](./example/example.png)
-
-### Package
-
-```bash
-sh build_all.sh
-```

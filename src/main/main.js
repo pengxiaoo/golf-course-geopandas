@@ -110,7 +110,6 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
 
     if (app.isPackaged) {
       basePath = process.resourcesPath;
-      // 直接使用打包后的可执行文件
       pythonExecutablePath = path.join(basePath, "python", "plot_courses");
       param = ["--root-data-dir", root_data_dir];
 
@@ -130,8 +129,6 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
 
     currentPythonProcess = spawn(pythonExecutablePath, param);
 
-    let hasShownPreview = false; // 添加标志位
-
     return new Promise((resolve, reject) => {
       let result = "";
       let error = "";
@@ -141,13 +138,12 @@ ipcMain.handle("change-skin", async (event, root_data_dir) => {
         result += output;
         console.log("Python output:", output);
 
-        // 只有还没展示过预览图时才处理
-        if (!hasShownPreview && output.includes("Generated image:")) {
+        // 处理所有生成的图片
+        if (output.includes("Generated image:")) {
           try {
             const imagePath = output.split("Generated image:")[1].trim();
             mainWindow.webContents.session.clearCache();
             mainWindow.webContents.send("update-preview", imagePath);
-            hasShownPreview = true; // 设置标志位
           } catch (e) {
             console.error("Error parsing image path:", e);
           }

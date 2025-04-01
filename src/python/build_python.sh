@@ -47,6 +47,16 @@ poetry run pyinstaller --onefile \
     --add-data "utils.py:." \
     --add-data "color_manager.py:." \
     --add-data "../../resources:resources" \
+    --exclude-module matplotlib.tests \
+    --exclude-module pandas.tests \
+    --exclude-module scipy.tests \
+    --exclude-module shapely.tests \
+    --exclude-module fiona.tests \
+    --exclude-module pyproj.tests \
+    --exclude-module rtree.tests \
+    --clean \
+    --noupx \
+    --optimize=2 \
     plot_courses.py
 
 # 添加调试信息
